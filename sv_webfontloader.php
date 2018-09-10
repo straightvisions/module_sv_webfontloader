@@ -36,10 +36,10 @@
 		public function menu(){
 			add_submenu_page(
 				'sv_wp_admin',																	// parent slug
-				__('Webfontloader', $this->get_name()),											// page title
-				__('Webfontloader', $this->get_name()),											// menu title
+				__('Webfontloader', $this->get_module_name()),											// page title
+				__('Webfontloader', $this->get_module_name()),											// menu title
 				'manage_options',																// capability
-				static::get_name(),																// menu slug
+				$this->get_module_name(),																// menu slug
 				function(){ require_once($this->get_path('lib/tpl/backend.php')); }				// callable function
 			);
 		}
@@ -47,21 +47,21 @@
 			// Add the section to reading settings so we can add our
 			// fields to it
 			add_settings_section(
-				$this->get_name(),											// $id, String for use in the 'id' attribute of tags.
+				$this->get_module_name(),											// $id, String for use in the 'id' attribute of tags.
 				'Settings',													// $title, Title of the section.
 				array($this, 'setting_section_callback'),					// $callback, Function that fills the section with the desired content. The function should echo its output.
-				$this->get_name()											// $page, the menu page on which to display this section
+				$this->get_module_name()											// $page, the menu page on which to display this section
 			);
 
 			// Add the field with the names and function to use for our new
 			// settings, put it in our new section
 			global $wp_settings_fields;
 			add_settings_field(
-				$this->get_name().'_fonts_mapping',									// $id, Slug-name to identify the field. Used in the 'id' attribute of tags.
+				$this->get_module_name().'_fonts_mapping',									// $id, Slug-name to identify the field. Used in the 'id' attribute of tags.
 				'Fonts Mapping',											// $title, Formatted title of the field. Shown as the label for the field during output.
 				array($this, 'setting_callback_fonts_mapping'),				// $callback, Function that fills the field with the desired form inputs. The function should echo its output.
-				$this->get_name(),											// $page, The slug-name of the settings page on which to show the section (general, reading, writing, ...).
-				$this->get_name(),											// $section, The slug-name of the section of the settings page in which to show the box.
+				$this->get_module_name(),											// $page, The slug-name of the settings page on which to show the section (general, reading, writing, ...).
+				$this->get_module_name(),											// $section, The slug-name of the section of the settings page in which to show the box.
 				array(														// $args, Extra arguments used when outputting the field.
 					'description'						=> 'Load custom font files from '.$this->get_path().'lib/fonts/',
 					'setting_id'						=> 'fonts_mapping'
@@ -70,8 +70,8 @@
 			
 			// Register our setting so that $_POST handling is done for us and our callback function just has to echo the <input>
 			register_setting(
-				$this->get_name(),											// $option_group, A settings group name.
-				$this->get_name().'_fonts_mapping'							// $option_name, The name of an option to sanitize and save.
+				$this->get_module_name(),											// $option_group, A settings group name.
+				$this->get_module_name().'_fonts_mapping'							// $option_name, The name of an option to sanitize and save.
 			);
 		}
 		public function font_weight_select_options($val = ''){
@@ -89,39 +89,39 @@
 			if(is_array($fonts) && count($fonts) > 0){
 				echo '<table>';
 				echo '<tr>
-					<th>'.__('Font File', $this->get_name()).'</th>
-					<th>'.__('CSS Font Name', $this->get_name()).'</th>
-					<th>'.__('Italic', $this->get_name()).'</th>
-					<th>'.__('Font Weight', $this->get_name()).'</th>
-					<th>'.__('Load', $this->get_name()).'</th>
+					<th>'.__('Font File', $this->get_module_name()).'</th>
+					<th>'.__('CSS Font Name', $this->get_module_name()).'</th>
+					<th>'.__('Italic', $this->get_module_name()).'</th>
+					<th>'.__('Font Weight', $this->get_module_name()).'</th>
+					<th>'.__('Load', $this->get_module_name()).'</th>
 				</tr>';
 				$active						= 0;
 				foreach($fonts as $font => $extensions){
 					echo '<tr>';
 					echo '<td><strong>'.$font.'</strong><br/>'.implode(',',$extensions).'</td>';
-					echo '<td><input placeholder="'.$font.'" name="'.$this->get_name().'_'.$args['setting_id'].'['.$font.'][name]" id="'.$args['setting_id'].'" type="text" value="'.get_option($this->get_name().'_'.$args['setting_id'])[$font]['name'].'" /></td>';
-					echo '<td><input name="'.$this->get_name().'_'.$args['setting_id'].'['.$font.'][italic]" id="'.$args['setting_id'].'" type="checkbox" value="1" '.(
+					echo '<td><input placeholder="'.$font.'" name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][name]" id="'.$args['setting_id'].'" type="text" value="'.get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['name'].'" /></td>';
+					echo '<td><input name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][italic]" id="'.$args['setting_id'].'" type="checkbox" value="1" '.(
 					
-					get_option($this->get_name().'_'.$args['setting_id'])[$font]['italic'] ?
+					get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['italic'] ?
 					' checked="checked"' :
 					''
 					
 					).'/></td>';
 					echo '<td>
-						<select name="'.$this->get_name().'_'.$args['setting_id'].'['.$font.'][weight]" id="'.$args['setting_id'].'">
-							'.$this->font_weight_select_options(get_option($this->get_name().'_'.$args['setting_id'])[$font]['weight']).'
+						<select name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][weight]" id="'.$args['setting_id'].'">
+							'.$this->font_weight_select_options(get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['weight']).'
 						</select>
 						</td>';
-					echo '<td><input name="'.$this->get_name().'_'.$args['setting_id'].'['.$font.'][active]" id="'.$args['setting_id'].'" type="checkbox" value="1" '.(
+					echo '<td><input name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][active]" id="'.$args['setting_id'].'" type="checkbox" value="1" '.(
 					
-					get_option($this->get_name().'_'.$args['setting_id'])[$font]['active'] ?
+					get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['active'] ?
 					' checked="checked"' :
 					''
 					
 					).'/></td>';
 					echo '</tr>';
 					
-					if(get_option($this->get_name().'_'.$args['setting_id'])[$font]['active']){
+					if(get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['active']){
 						$active++;
 					}
 				}
@@ -175,11 +175,11 @@
 				'otf'								=> 'opentype',
 				'svg'								=> 'svg',
 			);
-			if($this->get_custom_fonts() && get_option($this->get_name().'_fonts_mapping') && is_array(get_option($this->get_name().'_fonts_mapping')) && count(get_option($this->get_name().'_fonts_mapping')) > 0){
+			if($this->get_custom_fonts() && get_option($this->get_module_name().'_fonts_mapping') && is_array(get_option($this->get_module_name().'_fonts_mapping')) && count(get_option($this->get_module_name().'_fonts_mapping')) > 0){
 				$groups								= $this->get_custom_fonts_grouped();
 				if($groups) {
-					$font_settings						= get_option($this->get_name().'_fonts_mapping');
-					echo '<style id="'.$this->get_name().'">';
+					$font_settings						= get_option($this->get_module_name().'_fonts_mapping');
+					echo '<style id="'.$this->get_module_name().'">';
 					foreach ($groups as $group => $extensions) {
 						if (isset($font_settings[$group]) && isset($font_settings[$group]['active'])) {
 							$names[$name] = $name = '"' . $font_settings[$group]['name'] . '"';
@@ -212,15 +212,15 @@
 			}
 		}
 		public function register($wp_customize){
-			$wp_customize->add_setting($this->get_name().'_typekit', array(
+			$wp_customize->add_setting($this->get_module_name().'_typekit', array(
 				'default'							=> '',
 				'transport'							=> 'refresh',
 			));
-			$wp_customize->add_setting($this->get_name().'_google', array(
+			$wp_customize->add_setting($this->get_module_name().'_google', array(
 				'default'							=> '',
 				'transport'							=> 'refresh',
 			));
-			$wp_customize->add_setting($this->get_name().'_fontawesome', array(
+			$wp_customize->add_setting($this->get_module_name().'_fontawesome', array(
 				'default'							=> '',
 				'transport'							=> 'refresh',
 			));
@@ -228,22 +228,22 @@
 				'title'								=> __('Fonts', 'sv_100'),
 				'priority'							=> 30,
 			));
-			$wp_customize->add_control(new WP_Customize_Control($wp_customize, $this->get_name().'_typekit', array(
+			$wp_customize->add_control(new WP_Customize_Control($wp_customize, $this->get_module_name().'_typekit', array(
 				'label'								=> __('Typekit Kit ID', 'sv_100'),
 				'section'							=> 'sv_100_fonts',
-				'settings'							=> $this->get_name().'_typekit',
+				'settings'							=> $this->get_module_name().'_typekit',
 				'description'						=> __('Enter the Typekit Kit ID to load your font kit.', 'sv_100'),
 			)));
-			$wp_customize->add_control(new WP_Customize_Control($wp_customize, $this->get_name().'_google', array(
+			$wp_customize->add_control(new WP_Customize_Control($wp_customize, $this->get_module_name().'_google', array(
 				'label'								=> __('Google Font', 'sv_100'),
 				'section'							=> 'sv_100_fonts',
-				'settings'							=> $this->get_name().'_google',
+				'settings'							=> $this->get_module_name().'_google',
 				'description'						=> __("Example: ['Droid Sans', 'Droid Serif:bold']", 'sv_100'),
 			)));
-			$wp_customize->add_control(new JT_Customize_Control_Checkbox_Multiple($wp_customize, $this->get_name().'_fontawesome', array(
+			$wp_customize->add_control(new JT_Customize_Control_Checkbox_Multiple($wp_customize, $this->get_module_name().'_fontawesome', array(
 				'label'								=> __('Font Awesome', 'sv_100'),
 				'section'							=> 'sv_100_fonts',
-				'settings'							=> $this->get_name().'_fontawesome',
+				'settings'							=> $this->get_module_name().'_fontawesome',
 				'description'						=> __('', 'sv_100'),
 				'choices'							=> array(
 					'solid'							=> __('Solid', 'sv_100'),
@@ -257,14 +257,14 @@
 			// we load typekit in head, but async, so there is no pagespeed penality while it got loaded as fast as possible
 			// to prevent flash of unstyled text (FOUT), some CSS is inserted, too.
 			
-			if(get_theme_mod($this->get_name().'_typekit', false)){
-				$this->vendors						.= ' typekit: { id : "'.get_theme_mod($this->get_name().'_typekit', '').'" }';
+			if(get_theme_mod($this->get_module_name().'_typekit', false)){
+				$this->vendors						.= ' typekit: { id : "'.get_theme_mod($this->get_module_name().'_typekit', '').'" }';
 			}
-			if(get_theme_mod($this->get_name().'_google', false)){
-				$this->vendors						.= ' google: { families: '.get_theme_mod($this->get_name().'_google', '').' } ';
+			if(get_theme_mod($this->get_module_name().'_google', false)){
+				$this->vendors						.= ' google: { families: '.get_theme_mod($this->get_module_name().'_google', '').' } ';
 			}
 			
-			$fontawesome							= get_theme_mod($this->get_name().'_fontawesome', false);
+			$fontawesome							= get_theme_mod($this->get_module_name().'_fontawesome', false);
 			if($fontawesome && strlen($fontawesome) > 0){
 				$fontawesome						= explode(',', $fontawesome);
 				if($fontawesome && is_array($fontawesome) && count($fontawesome) > 0){
@@ -289,12 +289,12 @@
 			
 			if(strlen($this->vendors) > 0){
 				echo '
-					<script data-sv_100_module="'.$this->get_name().'">
+					<script data-sv_100_module="'.$this->get_module_name().'">
 						WebFontConfig =
 						{ '.$this->vendors.' }
 						;
 					</script>
-					<style data-sv_100_module="'.$this->get_name().'">
+					<style data-sv_100_module="'.$this->get_module_name().'">
 						html:not(.wf-active) *{
 							opacity:0 !important;
 						}
