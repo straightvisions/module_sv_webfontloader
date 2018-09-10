@@ -14,6 +14,7 @@
 		private $vendors							= '';
 		private $custom_fonts						= false;
 		private $custom_fonts_grouped				= false;
+		public static $settings_loaded				= false;
 
 		public function __construct($path,$url){
 			$this->path								= $path;
@@ -28,10 +29,10 @@
 			// Uploaded Fonts
 			$setting				= static::$settings->create($this);
 			$setting->set_source('wp_options');
-			$setting->set_type('text');
+			$setting->set_type('upload');
 			$setting->set_ID('uploaded_fonts');
 			$setting->set_title(__('Uploaded Fonts', $this->get_module_name()));
-			//$settings				= array($setting);
+			static::$settings_loaded				= array($setting);
 			
 			add_action('customize_register', array($this,'register'));
 			add_action('wp_head', array($this, 'wp_head'));

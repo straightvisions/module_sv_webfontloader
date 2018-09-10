@@ -6,9 +6,12 @@
 		<div id="sv_logo"><img src="<?php echo $this->get_url('lib/img/logo.png'); ?>" /></div>
 	</div>
 	<h2><?php echo get_admin_page_title(); ?></h2>
+    
     <?php
-
-    ?>
+        foreach(static::$settings_loaded as $setting){
+			echo $setting->get_form_field('test value', 'default', $this);
+        }
+        ?>
 </div>
 <?php
 	}
