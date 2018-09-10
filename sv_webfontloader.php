@@ -25,6 +25,14 @@
 			$this->module_enqueue_scripts();
 		}
 		public function init(){
+			// Uploaded Fonts
+			$setting				= static::$settings->create($this);
+			$setting->set_source('wp_options');
+			$setting->set_type('text');
+			$setting->set_ID('uploaded_fonts');
+			$setting->set_title(__('Uploaded Fonts', $this->get_module_name()));
+			//$settings				= array($setting);
+			
 			add_action('customize_register', array($this,'register'));
 			add_action('wp_head', array($this, 'wp_head'));
 			add_action('customize_register', array($this, 'customize_register'), 0);
