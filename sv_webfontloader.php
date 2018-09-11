@@ -26,8 +26,10 @@
 			$this->module_enqueue_scripts();
 		}
 		public function init(){
+			add_filter('upload_mimes', array($this, 'upload_mimes'));
+			
 			// Uploaded Fonts
-			$setting				= static::$settings->create($this);
+			$setting								= static::$settings->create($this);
 			$setting->set_source('wp_options');
 			$setting->set_type('upload');
 			$setting->set_ID('uploaded_fonts');
@@ -41,6 +43,16 @@
 			add_action('admin_menu', array($this, 'menu'));
 			add_action('admin_enqueue_scripts', array($this, 'acp_style'));
 			add_action('admin_init', array($this, 'settings_api_init'));
+		}
+		public function upload_mimes($mime_types = array()){
+			$mime_types['svg']  = 'image/svg+xml';
+			$mime_types['woff']  = 'application/font-woff';
+			$mime_types['woff2']  = 'font/woff2';
+			$mime_types['eot']  = 'application/vnd.ms-fontobject';
+			$mime_types['ttf']  = 'application/font-sfnt';
+			$mime_types['otf']  = 'application/font-sfnt';
+
+			return $mime_types;
 		}
 		public function menu(){
 			add_submenu_page(
