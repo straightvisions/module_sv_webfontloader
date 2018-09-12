@@ -14,6 +14,14 @@
 		private $vendors							= '';
 		private $custom_fonts						= false;
 		private $custom_fonts_grouped				= false;
+		private $filter								= array(
+			'svg'									=> 'image/svg+xml',
+			'woff'									=> 'application/font-woff',
+			'woff2'									=> 'font/woff2',
+			'eot'									=> 'application/vnd.ms-fontobject',
+			'ttf'									=> 'application/x-font-ttf',
+			'otf'									=> 'application/font-sfnt'
+		);
 		public static $settings_loaded				= false;
 
 		public function __construct($path,$url){
@@ -32,6 +40,8 @@
 			$setting								= static::$settings->create($this);
 			$setting->set_source('wp_options');
 			$setting->set_type('upload');
+			$setting->set_callback(array($this,'fonts_list'));
+			$setting->set_filter(array_keys($this->filter));
 			$setting->set_ID('uploaded_fonts');
 			$setting->set_title(__('Uploaded Fonts', $this->get_module_name()));
 			static::$settings_loaded				= array($setting);
@@ -44,15 +54,19 @@
 			add_action('admin_enqueue_scripts', array($this, 'acp_style'));
 			add_action('admin_init', array($this, 'settings_api_init'));
 		}
+		public function fonts_list($setting, $param): string{
+			$form				= $setting->get_form_field('form', $this);
+			
+			ob_start();
+			require($this->get_path('lib/tpl/backend_upload.php'));
+			$form .= ob_get_contents();
+			ob_end_clean();
+			
+			
+			return $form;
+		}
 		public function upload_mimes($mime_types = array()){
-			$mime_types['svg']  = 'image/svg+xml';
-			$mime_types['woff']  = 'application/font-woff';
-			$mime_types['woff2']  = 'font/woff2';
-			$mime_types['eot']  = 'application/vnd.ms-fontobject';
-			$mime_types['ttf']  = 'application/font-sfnt';
-			$mime_types['otf']  = 'application/font-sfnt';
-
-			return $mime_types;
+			return $this->filter;
 		}
 		public function menu(){
 			add_submenu_page(

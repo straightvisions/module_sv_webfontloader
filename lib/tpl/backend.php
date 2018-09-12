@@ -9,7 +9,7 @@
     
     <?php
         foreach(static::$settings_loaded as $setting){
-			echo $setting->get_form_field('fonts', 'default', $this);
+			echo $setting->get_form_field('default', $this);
         }
         ?>
 </div>
