@@ -16,13 +16,13 @@
 		private $custom_fonts_grouped				= false;
 		private $filter								= array(
 			'svg'									=> 'image/svg+xml',
-			'woff'									=> 'application/font-woff',
-			'woff2'									=> 'font/woff2',
+			'woff'									=> 'application/octet-stream',
+			'woff2'									=> 'application/octet-stream',
 			'eot'									=> 'application/vnd.ms-fontobject',
 			'ttf'									=> 'application/x-font-ttf',
 			'otf'									=> 'application/font-sfnt'
 		);
-		public static $settings_loaded				= false;
+		public static $module_settings				= array();
 
 		public function __construct($path,$url){
 			$this->path								= $path;
@@ -37,31 +37,25 @@
 			add_filter('upload_mimes', array($this, 'upload_mimes'));
 			
 			// Uploaded Fonts
-			$setting								= static::$settings->create($this);
-			$setting->set_source('wp_options');
-			$setting->set_type('upload');
-			$setting->set_callback(array($this,'fonts_list'));
-			$setting->set_filter(array_keys($this->filter));
-			$setting->set_ID('uploaded_fonts');
-			$setting->set_title(__('Uploaded Fonts', $this->get_module_name()));
-			static::$settings_loaded				= array($setting);
+			static::$module_settings['fonts_uploaded']				= static::$settings->create($this);
+			static::$module_settings['fonts_uploaded']->set_ID('uploaded_fonts');
+			static::$module_settings['fonts_uploaded']->set_title(__('Uploaded Fonts', $this->get_module_name()));
+			static::$module_settings['fonts_uploaded']->load_type('upload');
+			static::$module_settings['fonts_uploaded']->set_callback(array($this,'fonts_list'));
+			static::$module_settings['fonts_uploaded']->set_filter(array_keys($this->filter));
 			
-			add_action('customize_register', array($this,'register'));
 			add_action('wp_head', array($this, 'wp_head'));
-			add_action('customize_register', array($this, 'customize_register'), 0);
 			
 			add_action('admin_menu', array($this, 'menu'));
 			add_action('admin_enqueue_scripts', array($this, 'acp_style'));
-			add_action('admin_init', array($this, 'settings_api_init'));
 		}
-		public function fonts_list($setting, $param): string{
-			$form				= $setting->get_form_field('form', $this);
+		public function fonts_list($setting): string{
+			$form				= $setting->form();
 			
 			ob_start();
 			require($this->get_path('lib/tpl/backend_upload.php'));
 			$form .= ob_get_contents();
 			ob_end_clean();
-			
 			
 			return $form;
 		}

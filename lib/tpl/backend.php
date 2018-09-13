@@ -8,8 +8,8 @@
 	<h2><?php echo get_admin_page_title(); ?></h2>
     
     <?php
-        foreach(static::$settings_loaded as $setting){
-			echo $setting->get_form_field('default', $this);
+        foreach(static::$module_settings as $setting){
+			echo $setting->get_form_field();
         }
         ?>
 </div>
