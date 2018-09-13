@@ -29,7 +29,7 @@
 			$this->url								= $url;
 			$this->name								= get_class($this);
 			
-			$this->init();
+			add_action('init', array($this, 'init'));
 			
 			$this->module_enqueue_scripts();
 		}

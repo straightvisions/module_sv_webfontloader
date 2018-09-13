@@ -9,5 +9,4 @@
 	}else{
 		echo '<p>'.__('No fonts uploaded yet', $this->get_module_name()).'</p>';
 	}
-	
 ?>
