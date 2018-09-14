@@ -61,10 +61,21 @@
 			
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
-			
-			$this->module_enqueue_scripts();
 		}
 		public function admin_init(){
+			add_filter('upload_mimes', array($this, 'upload_mimes'));
+			$this->load_settings();
+		}
+		public function init(){
+			add_action('wp_head', array($this, 'wp_head'));
+			add_action('admin_menu', array($this, 'menu'));
+			$this->module_enqueue_scripts();
+
+			if(!is_admin()){
+				$this->load_settings();
+			}
+		}
+		private function font_uploader(){
 			// Uploaded Fonts
 			static::$s_fonts_upload					= static::$settings->create($this);
 			static::$s_fonts_upload->set_section('uploaded_fonts');
@@ -75,12 +86,14 @@
 			static::$s_fonts_upload->load_type('upload');
 			static::$s_fonts_upload->set_callback(array($this,'fonts_list'));
 			static::$s_fonts_upload->set_filter(array_keys($this->filter));
-			
+		}
+		private function font_settings(){
 			$fonts									= static::$s_fonts_upload->run_type()->get_data();
 			if($fonts){
 				foreach($fonts as $font){
 					// group by filename without ext
-					$filename						= basename(get_attached_file($font->ID));
+					$url							= wp_get_attachment_url($font->ID);
+					$filename						= basename($url);
 					$fileparts						= explode('.',$filename);
 					if(is_array($fileparts)) {
 						$name = $fileparts[0];
@@ -89,42 +102,42 @@
 						$name = $filename;
 						$ext = 'no_ext';
 					}
-					
+
 					if(!isset(static::$s_fonts[$name])){
 						static::$s_fonts[$name]		= array();
 					}
-					
-					static::$s_fonts[$name]['ext'][]	= $ext;
+
+					static::$s_fonts[$name]['url'][$ext]	= $url;
 				}
-				
-				// create sub settings
-				if(count(static::$s_fonts) > 0) {
-					foreach(static::$s_fonts as $name => $data) {
-						foreach(static::$s_fields as $field_id => $field_type){
-							$s = static::$settings->create($this);
-							$s->set_section_group($name);
-							$s->set_section_name($name);
-							$s->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', static::$s_fonts[$name]['ext']));
-							$s->set_ID('font_' . $name . '_' . $field_id);
-							$s->set_title(static::$s_titles[$field_id]);
-							$s->set_description(static::$s_descriptions[$field_id]);
-							
-							if(isset(static::$s_options[$field_id])){
-								$s->set_options(static::$s_options[$field_id]);
-							}
-							
-							$s->load_type($field_type);
-							static::$s_fonts[$name]['settings'][$field_id] = $s;
+				$this->font_sub_settings();
+			}
+		}
+		private function font_sub_settings(){
+			// create sub settings
+			if(count(static::$s_fonts) > 0) {
+				foreach(static::$s_fonts as $name => $data) {
+					foreach(static::$s_fields as $field_id => $field_type){
+						$s = static::$settings->create($this);
+						$s->set_section_group($name);
+						$s->set_section_name($name);
+						$s->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys(static::$s_fonts[$name]['url'])));
+						$s->set_ID('font_' . $name . '_' . $field_id);
+						$s->set_title(static::$s_titles[$field_id]);
+						$s->set_description(static::$s_descriptions[$field_id]);
+
+						if(isset(static::$s_options[$field_id])){
+							$s->set_options(static::$s_options[$field_id]);
 						}
+
+						$s->load_type($field_type);
+						static::$s_fonts[$name]['settings'][$field_id] = $s;
 					}
 				}
 			}
 		}
-		public function init(){
-			add_filter('upload_mimes', array($this, 'upload_mimes'));
-			add_action('wp_head', array($this, 'wp_head'));
-			add_action('admin_menu', array($this, 'menu'));
-			add_action('admin_enqueue_scripts', array($this, 'acp_style'));
+		public function load_settings(){
+			$this->font_uploader();
+			$this->font_settings();
 		}
 		public function fonts_list($setting): string{
 			$form				= $setting->form();
@@ -149,98 +162,6 @@
 				function(){ require_once($this->get_path('lib/tpl/backend.php')); }				// callable function
 			);
 		}
-		public function font_weight_select_options($val = ''){
-			$output										= '';
-			$i											= 1;
-			while($i <= 9){
-				$output									.= '<option'.(($val == intval($i.'00')) ? ' selected="selected"' : '').'>'.$i.'00</option>';
-				$i++;
-			}
-			return $output;
-		}
-		public function setting_callback_fonts_mapping($args){
-			$fonts										= $this->get_custom_fonts_grouped();
-			echo '<div><strong>'.$args['description'].'</strong></div>';
-			if(is_array($fonts) && count($fonts) > 0){
-				echo '<table>';
-				echo '<tr>
-					<th>'.__('Font File', $this->get_module_name()).'</th>
-					<th>'.__('CSS Font Name', $this->get_module_name()).'</th>
-					<th>'.__('Italic', $this->get_module_name()).'</th>
-					<th>'.__('Font Weight', $this->get_module_name()).'</th>
-					<th>'.__('Load', $this->get_module_name()).'</th>
-				</tr>';
-				$active						= 0;
-				foreach($fonts as $font => $extensions){
-					echo '<tr>';
-					echo '<td><strong>'.$font.'</strong><br/>'.implode(',',$extensions).'</td>';
-					echo '<td><input placeholder="'.$font.'" name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][name]" id="'.$args['setting_id'].'" type="text" value="'.get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['name'].'" /></td>';
-					echo '<td><input name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][italic]" id="'.$args['setting_id'].'" type="checkbox" value="1" '.(
-					
-					get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['italic'] ?
-					' checked="checked"' :
-					''
-					
-					).'/></td>';
-					echo '<td>
-						<select name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][weight]" id="'.$args['setting_id'].'">
-							'.$this->font_weight_select_options(get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['weight']).'
-						</select>
-						</td>';
-					echo '<td><input name="'.$this->get_module_name().'_'.$args['setting_id'].'['.$font.'][active]" id="'.$args['setting_id'].'" type="checkbox" value="1" '.(
-					
-					get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['active'] ?
-					' checked="checked"' :
-					''
-					
-					).'/></td>';
-					echo '</tr>';
-					
-					if(get_option($this->get_module_name().'_'.$args['setting_id'])[$font]['active']){
-						$active++;
-					}
-				}
-				echo '</table>';
-				echo '<p>You have <strong>'.$active.'</strong> fonts activated.</p>';
-			}
-		}
-		public function get_custom_fonts(){
-			// custom/local fonts
-			if(!$this->custom_fonts){
-				try{
-					if($this->get_path('lib/fonts/')){
-						$this->custom_fonts				= array_diff(scandir($this->get_path('lib/fonts/')), array('..', '.'));
-						if(count($this->custom_fonts) > 0){
-							return $this->custom_fonts;
-						}else{
-							return false;
-						}
-					}
-				}catch(Exception $e){
-					//echo $e->getMessage();
-				}
-			}else{
-				return $this->custom_fonts;
-			}
-		}
-		public function get_custom_fonts_grouped(){
-			if(!$this->custom_fonts_grouped) {
-				if($this->get_custom_fonts()) {
-					$this->custom_fonts_grouped									= array();
-					foreach ($this->get_custom_fonts() as $font) {
-						$font_parts												= explode('.',$font);
-						if(!isset($this->custom_fonts_grouped[$font_parts[0]])){
-							$this->custom_fonts_grouped[$font_parts[0]]			= array();
-						}
-						$this->custom_fonts_grouped[$font_parts[0]][]			= $font_parts[1];
-					}
-				}else{
-					return false;
-				}
-			}
-			asort($this->custom_fonts_grouped);
-			return $this->custom_fonts_grouped;
-		}
 		public function load_custom_fonts(){
 			$formats								= array(
 				'eot'								=> '',
@@ -250,96 +171,53 @@
 				'otf'								=> 'opentype',
 				'svg'								=> 'svg',
 			);
-			if($this->get_custom_fonts() && get_option($this->get_module_name().'_fonts_mapping') && is_array(get_option($this->get_module_name().'_fonts_mapping')) && count(get_option($this->get_module_name().'_fonts_mapping')) > 0){
-				$groups								= $this->get_custom_fonts_grouped();
-				if($groups) {
-					$font_settings						= get_option($this->get_module_name().'_fonts_mapping');
-					echo '<style id="'.$this->get_module_name().'">';
-					foreach ($groups as $group => $extensions) {
-						if (isset($font_settings[$group]) && isset($font_settings[$group]['active'])) {
-							$names[$name] = $name = '"' . $font_settings[$group]['name'] . '"';
-							$f = array("\n");
-							$f[] = '@font-face {';
-							$f[] = 'font-family: ' . $name . ';';
-							
-							// src
-							foreach ($extensions as $ext) {
-								$f[] = 'src:url("' . $this->get_url('lib/fonts/' . $group.'.'.$ext) . '")' .
-									((strlen($formats[$ext]) > 0) ? ' format("' . $formats[$ext] . '");' : ';');
-							}
-							
-							// weight
-							$f[] = 'font-weight: ' . $font_settings[$group]['weight'] . ';';
-							
-							// italic
-							if (isset($font_settings[$group]['italic'])) {
-								$f[] = 'font-style: italic;';
-							}
-							
-							$f[] = '}';
-							echo implode("\n", $f);
+			$names									= array();
+
+			if(static::$s_fonts) {
+				echo '<style id="' . $this->get_module_name() . '">';
+				foreach (static::$s_fonts as $name => $data) {
+					if ($data['settings']['active']->run_type()->get_data() == 1) {
+						$names[$family_name]		= $family_name		= $data['settings']['family_name']->run_type()->get_data();
+						$f = array("\n");
+						$f[] = '@font-face {';
+						$f[] = 'font-family: "' . $family_name . '";';
+
+						// src
+						foreach ($data['url'] as $ext => $url) {
+							$f[] = 'src:url("' . $url . '")' .
+								((strlen($formats[$ext]) > 0) ? ' format("' . $formats[$ext] . '");' : ';');
 						}
+
+						// weight
+						$f[] = 'font-weight: ' . $data['settings']['weight']->run_type()->get_data() . ';';
+
+						// italic
+						if ($data['settings']['italic']->run_type()->get_data() == 1) {
+							$f[] = 'font-style: italic;';
+						}
+
+						$f[] = '}';
+						echo implode("\n", $f);
 					}
-					echo '</style>';
-					
-					$this->vendors .= 'custom: { families: [' . implode(',', $names) . '] }';
 				}
+				echo '</style>';
+
+				$this->vendors .= 'custom: { families: ["' . implode('","', $names) . '"] }';
 			}
 		}
-		public function register($wp_customize){
-			$wp_customize->add_setting($this->get_module_name().'_typekit', array(
-				'default'							=> '',
-				'transport'							=> 'refresh',
-			));
-			$wp_customize->add_setting($this->get_module_name().'_google', array(
-				'default'							=> '',
-				'transport'							=> 'refresh',
-			));
-			$wp_customize->add_setting($this->get_module_name().'_fontawesome', array(
-				'default'							=> '',
-				'transport'							=> 'refresh',
-			));
-			$wp_customize->add_section('sv_100_fonts', array(
-				'title'								=> __('Fonts', 'sv_100'),
-				'priority'							=> 30,
-			));
-			$wp_customize->add_control(new WP_Customize_Control($wp_customize, $this->get_module_name().'_typekit', array(
-				'label'								=> __('Typekit Kit ID', 'sv_100'),
-				'section'							=> 'sv_100_fonts',
-				'settings'							=> $this->get_module_name().'_typekit',
-				'description'						=> __('Enter the Typekit Kit ID to load your font kit.', 'sv_100'),
-			)));
-			$wp_customize->add_control(new WP_Customize_Control($wp_customize, $this->get_module_name().'_google', array(
-				'label'								=> __('Google Font', 'sv_100'),
-				'section'							=> 'sv_100_fonts',
-				'settings'							=> $this->get_module_name().'_google',
-				'description'						=> __("Example: ['Droid Sans', 'Droid Serif:bold']", 'sv_100'),
-			)));
-			$wp_customize->add_control(new JT_Customize_Control_Checkbox_Multiple($wp_customize, $this->get_module_name().'_fontawesome', array(
-				'label'								=> __('Font Awesome', 'sv_100'),
-				'section'							=> 'sv_100_fonts',
-				'settings'							=> $this->get_module_name().'_fontawesome',
-				'description'						=> __('', 'sv_100'),
-				'choices'							=> array(
-					'solid'							=> __('Solid', 'sv_100'),
-					'regular'						=> __('Regular', 'sv_100'),
-					'brands'						=> __('Brands', 'sv_100'),
-				)
-			)));
-		}
 		public function wp_head(){
-			return;
 			$this->load_custom_fonts();
 			// we load typekit in head, but async, so there is no pagespeed penality while it got loaded as fast as possible
 			// to prevent flash of unstyled text (FOUT), some CSS is inserted, too.
-			
+
+			/* // we need to upgrade this snippet if we want to allow loading vendor fonts
 			if(get_theme_mod($this->get_module_name().'_typekit', false)){
 				$this->vendors						.= ' typekit: { id : "'.get_theme_mod($this->get_module_name().'_typekit', '').'" }';
 			}
 			if(get_theme_mod($this->get_module_name().'_google', false)){
 				$this->vendors						.= ' google: { families: '.get_theme_mod($this->get_module_name().'_google', '').' } ';
 			}
-			
+
 			$fontawesome							= get_theme_mod($this->get_module_name().'_fontawesome', false);
 			if($fontawesome && strlen($fontawesome) > 0){
 				$fontawesome						= explode(',', $fontawesome);
@@ -362,7 +240,7 @@
 					}
 				}
 			}
-			
+			*/
 			if(strlen($this->vendors) > 0){
 				echo '
 					<script data-sv_100_module="'.$this->get_module_name().'">
@@ -371,7 +249,7 @@
 						;
 					</script>
 					<style data-sv_100_module="'.$this->get_module_name().'">
-						html:not(.wf-active) *{
+						html:not(.wf-inactive):not(.wf-active) *{
 							opacity:0 !important;
 						}
 						html *{
@@ -381,9 +259,6 @@
 					</style>
 				';
 			}
-		}
-		public function customize_register(){
-			require_once($this->get_path('lib/modules/multiple_checkboxes.php'));
 		}
 	}
 ?>
