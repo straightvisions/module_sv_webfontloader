@@ -12,8 +12,6 @@
 	class sv_webfontloader extends init{
 		static $scripts_loaded						= false;
 		private $vendors							= '';
-		private $custom_fonts						= false;
-		private $custom_fonts_grouped				= false;
 		private $filter								= array(
 			'svg'									=> 'image/svg+xml',
 			'woff'									=> 'application/octet-stream',
@@ -22,30 +20,109 @@
 			'ttf'									=> 'application/x-font-ttf',
 			'otf'									=> 'application/font-sfnt'
 		);
-		public static $module_settings				= array();
+		private static $s_fields					= array(
+			'family_name'							=> 'text',
+			'italic'								=> 'checkbox',
+			'weight'								=> 'select',
+			'active'								=> 'checkbox',
+		);
+		private static $s_titles					= array();
+		private static $s_descriptions				= array();
+		private static $s_options					= array();
+		private static $s_fonts_upload				= false;
+		private static $s_fonts						= array();
 
 		public function __construct($path,$url){
 			$this->path								= $path;
 			$this->url								= $url;
 			$this->name								= get_class($this);
 			
+			static::$s_titles['family_name']		= __('Family Name', $this->get_module_name());
+			static::$s_titles['italic']				= __('italic', $this->get_module_name());
+			static::$s_titles['weight']				= __('Font Weight', $this->get_module_name());
+			static::$s_titles['active']				= __('active', $this->get_module_name());
+			
+			static::$s_descriptions['family_name']	= __('Font Family Name, e.g. for CSS', $this->get_module_name());
+			static::$s_descriptions['italic']		= __('If this font is italic version, activate this setting.', $this->get_module_name());
+			static::$s_descriptions['weight']		= __('Please select font weight.', $this->get_module_name());
+			static::$s_descriptions['active']		= __('Only active fonts will be loaded.', $this->get_module_name());
+			
+			static::$s_options['weight']			= array(
+				'100'								=> '100',
+				'200'								=> '200',
+				'300'								=> '300',
+				'400'								=> '400',
+				'500'								=> '500',
+				'600'								=> '600',
+				'700'								=> '700',
+				'800'								=> '800',
+				'900'								=> '900',
+			);
+			
+			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
 			
 			$this->module_enqueue_scripts();
 		}
+		public function admin_init(){
+			// Uploaded Fonts
+			static::$s_fonts_upload					= static::$settings->create($this);
+			static::$s_fonts_upload->set_section('uploaded_fonts');
+			static::$s_fonts_upload->set_section_name(__('Font Upload',$this->get_module_name()));
+			static::$s_fonts_upload->set_section_description('');
+			static::$s_fonts_upload->set_ID('uploaded_fonts');
+			static::$s_fonts_upload->set_title(__('Uploaded Fonts', $this->get_module_name()));
+			static::$s_fonts_upload->load_type('upload');
+			static::$s_fonts_upload->set_callback(array($this,'fonts_list'));
+			static::$s_fonts_upload->set_filter(array_keys($this->filter));
+			
+			$fonts									= static::$s_fonts_upload->run_type()->get_data();
+			if($fonts){
+				foreach($fonts as $font){
+					// group by filename without ext
+					$filename						= basename(get_attached_file($font->ID));
+					$fileparts						= explode('.',$filename);
+					if(is_array($fileparts)) {
+						$name = $fileparts[0];
+						$ext = explode('.', $filename)[count($fileparts) - 1];
+					}else{
+						$name = $filename;
+						$ext = 'no_ext';
+					}
+					
+					if(!isset(static::$s_fonts[$name])){
+						static::$s_fonts[$name]		= array();
+					}
+					
+					static::$s_fonts[$name]['ext'][]	= $ext;
+				}
+				
+				// create sub settings
+				if(count(static::$s_fonts) > 0) {
+					foreach(static::$s_fonts as $name => $data) {
+						foreach(static::$s_fields as $field_id => $field_type){
+							$s = static::$settings->create($this);
+							$s->set_section_group($name);
+							$s->set_section_name($name);
+							$s->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', static::$s_fonts[$name]['ext']));
+							$s->set_ID('font_' . $name . '_' . $field_id);
+							$s->set_title(static::$s_titles[$field_id]);
+							$s->set_description(static::$s_descriptions[$field_id]);
+							
+							if(isset(static::$s_options[$field_id])){
+								$s->set_options(static::$s_options[$field_id]);
+							}
+							
+							$s->load_type($field_type);
+							static::$s_fonts[$name]['settings'][$field_id] = $s;
+						}
+					}
+				}
+			}
+		}
 		public function init(){
 			add_filter('upload_mimes', array($this, 'upload_mimes'));
-			
-			// Uploaded Fonts
-			static::$module_settings['fonts_uploaded']				= static::$settings->create($this);
-			static::$module_settings['fonts_uploaded']->set_ID('uploaded_fonts');
-			static::$module_settings['fonts_uploaded']->set_title(__('Uploaded Fonts', $this->get_module_name()));
-			static::$module_settings['fonts_uploaded']->load_type('upload');
-			static::$module_settings['fonts_uploaded']->set_callback(array($this,'fonts_list'));
-			static::$module_settings['fonts_uploaded']->set_filter(array_keys($this->filter));
-			
 			add_action('wp_head', array($this, 'wp_head'));
-			
 			add_action('admin_menu', array($this, 'menu'));
 			add_action('admin_enqueue_scripts', array($this, 'acp_style'));
 		}
@@ -70,37 +147,6 @@
 				'manage_options',																// capability
 				$this->get_module_name(),																// menu slug
 				function(){ require_once($this->get_path('lib/tpl/backend.php')); }				// callable function
-			);
-		}
-		public function settings_api_init(){
-			// Add the section to reading settings so we can add our
-			// fields to it
-			add_settings_section(
-				$this->get_module_name(),											// $id, String for use in the 'id' attribute of tags.
-				'Settings',													// $title, Title of the section.
-				array($this, 'setting_section_callback'),					// $callback, Function that fills the section with the desired content. The function should echo its output.
-				$this->get_module_name()											// $page, the menu page on which to display this section
-			);
-
-			// Add the field with the names and function to use for our new
-			// settings, put it in our new section
-			global $wp_settings_fields;
-			add_settings_field(
-				$this->get_module_name().'_fonts_mapping',									// $id, Slug-name to identify the field. Used in the 'id' attribute of tags.
-				'Fonts Mapping',											// $title, Formatted title of the field. Shown as the label for the field during output.
-				array($this, 'setting_callback_fonts_mapping'),				// $callback, Function that fills the field with the desired form inputs. The function should echo its output.
-				$this->get_module_name(),											// $page, The slug-name of the settings page on which to show the section (general, reading, writing, ...).
-				$this->get_module_name(),											// $section, The slug-name of the section of the settings page in which to show the box.
-				array(														// $args, Extra arguments used when outputting the field.
-					'description'						=> 'Load custom font files from '.$this->get_path().'lib/fonts/',
-					'setting_id'						=> 'fonts_mapping'
-			)
-			);
-			
-			// Register our setting so that $_POST handling is done for us and our callback function just has to echo the <input>
-			register_setting(
-				$this->get_module_name(),											// $option_group, A settings group name.
-				$this->get_module_name().'_fonts_mapping'							// $option_name, The name of an option to sanitize and save.
 			);
 		}
 		public function font_weight_select_options($val = ''){
@@ -282,6 +328,7 @@
 			)));
 		}
 		public function wp_head(){
+			return;
 			$this->load_custom_fonts();
 			// we load typekit in head, but async, so there is no pagespeed penality while it got loaded as fast as possible
 			// to prevent flash of unstyled text (FOUT), some CSS is inserted, too.
