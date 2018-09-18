@@ -174,7 +174,7 @@
 			$names									= array();
 
 			if(static::$s_fonts) {
-				echo '<style id="' . $this->get_module_name() . '">';
+				echo '<style data-sv_100_module="'.$this->get_module_name().'">';
 				foreach (static::$s_fonts as $name => $data) {
 					if ($data['settings']['active']->run_type()->get_data() == 1) {
 						$names[$family_name]		= $family_name		= $data['settings']['family_name']->run_type()->get_data();
@@ -183,7 +183,9 @@
 						$f[] = 'font-family: "' . $family_name . '";';
 
 						// src
-						foreach ($data['url'] as $ext => $url) {
+						$urls						= $data['url'];
+						asort($urls);
+						foreach ($urls as $ext => $url) {
 							$f[] = 'src:url("' . $url . '")' .
 								((strlen($formats[$ext]) > 0) ? ' format("' . $formats[$ext] . '");' : ';');
 						}
@@ -245,7 +247,9 @@
 				echo '
 					<script data-sv_100_module="'.$this->get_module_name().'">
 						WebFontConfig =
-						{ '.$this->vendors.' }
+						{
+						'.$this->vendors.'
+						}
 						;
 					</script>
 					<style data-sv_100_module="'.$this->get_module_name().'">
@@ -254,7 +258,7 @@
 						}
 						html *{
 							opacity:1 !important;
-							transition: all 1s linear;
+							transition: all 0.5s linear;
 						}
 					</style>
 				';
