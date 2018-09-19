@@ -63,7 +63,8 @@
 			add_action('init', array($this, 'init'));
 		}
 		public function admin_init(){
-			add_filter('upload_mimes', array($this, 'upload_mimes'));
+			// @todo: make sure setting upload mimes is affecting current form only
+			//add_filter('upload_mimes', array($this, 'upload_mimes'));
 			$this->load_settings();
 		}
 		public function init(){
