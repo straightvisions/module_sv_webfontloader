@@ -63,8 +63,7 @@
 			add_action('init', array($this, 'init'));
 		}
 		public function admin_init(){
-			// @todo: make sure setting upload mimes is affecting current form only
-			//add_filter('upload_mimes', array($this, 'upload_mimes'));
+			add_filter('upload_mimes', array($this, 'upload_mimes'));
 			$this->load_settings();
 		}
 		public function init(){
@@ -151,7 +150,8 @@
 			return $form;
 		}
 		public function upload_mimes($mime_types = array()){
-			return $this->filter;
+			// @todo: make sure setting upload mimes is affecting current form only
+			return array_merge($mime_types,$this->filter);
 		}
 		public function menu(){
 			add_submenu_page(
