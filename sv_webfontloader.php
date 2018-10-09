@@ -258,7 +258,7 @@
 							opacity:0 !important;
 						}
 						html *{
-							transition: all 0.5s linear;
+							transition: opacity 0.5s linear;
 						}
 					</style>
 				';
