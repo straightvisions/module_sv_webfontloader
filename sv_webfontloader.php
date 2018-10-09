@@ -83,7 +83,7 @@
 			static::$s_fonts_upload->set_section_description('');
 			static::$s_fonts_upload->set_ID('uploaded_fonts');
 			static::$s_fonts_upload->set_title(__('Uploaded Fonts', $this->get_module_name()));
-			static::$s_fonts_upload->load_type('upload');
+			static::$s_fonts_upload->load_type('multi_upload');
 			static::$s_fonts_upload->set_callback(array($this,'fonts_list'));
 			static::$s_fonts_upload->set_filter(array_keys($this->filter));
 		}
