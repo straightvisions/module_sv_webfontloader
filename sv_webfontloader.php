@@ -20,34 +20,33 @@
 			'ttf'									=> 'application/x-font-ttf',
 			'otf'									=> 'application/font-sfnt'
 		);
-		private static $s_fields					= array(
+		private $s_fields							= array(
 			'family_name'							=> 'text',
 			'italic'								=> 'checkbox',
 			'weight'								=> 'select',
 			'active'								=> 'checkbox',
 		);
-		private static $s_titles					= array();
-		private static $s_descriptions				= array();
-		private static $s_options					= array();
-		private static $s_fonts_upload				= false;
-		private static $s_fonts						= array();
+		private $s_titles							= array();
+		private $s_descriptions						= array();
+		private $s_options							= array();
+		private $s_fonts_fonts_upload						= false;
 
 		public function __construct($path,$url){
 			$this->path								= $path;
 			$this->url								= $url;
 			$this->name								= get_class($this);
 			
-			static::$s_titles['family_name']		= __('Family Name', $this->get_module_name());
-			static::$s_titles['italic']				= __('italic', $this->get_module_name());
-			static::$s_titles['weight']				= __('Font Weight', $this->get_module_name());
-			static::$s_titles['active']				= __('active', $this->get_module_name());
+			$this->s_titles['family_name']			= __('Family Name', $this->get_module_name());
+			$this->s_titles['italic']				= __('italic', $this->get_module_name());
+			$this->s_titles['weight']				= __('Font Weight', $this->get_module_name());
+			$this->s_titles['active']				= __('active', $this->get_module_name());
 			
-			static::$s_descriptions['family_name']	= __('Font Family Name, e.g. for CSS', $this->get_module_name());
-			static::$s_descriptions['italic']		= __('If this font is italic version, activate this setting.', $this->get_module_name());
-			static::$s_descriptions['weight']		= __('Please select font weight.', $this->get_module_name());
-			static::$s_descriptions['active']		= __('Only active fonts will be loaded.', $this->get_module_name());
+			$this->s_descriptions['family_name']	= __('Font Family Name, e.g. for CSS', $this->get_module_name());
+			$this->s_descriptions['italic']			= __('If this font is italic version, activate this setting.', $this->get_module_name());
+			$this->s_descriptions['weight']			= __('Please select font weight.', $this->get_module_name());
+			$this->s_descriptions['active']			= __('Only active fonts will be loaded.', $this->get_module_name());
 			
-			static::$s_options['weight']			= array(
+			$this->s_options['weight']				= array(
 				'100'								=> '100',
 				'200'								=> '200',
 				'300'								=> '300',
@@ -77,18 +76,18 @@
 		}
 		private function font_uploader(){
 			// Uploaded Fonts
-			static::$s_fonts_upload					= static::$settings->create($this);
-			static::$s_fonts_upload->set_section('uploaded_fonts');
-			static::$s_fonts_upload->set_section_name(__('Font Upload',$this->get_module_name()));
-			static::$s_fonts_upload->set_section_description('');
-			static::$s_fonts_upload->set_ID('uploaded_fonts');
-			static::$s_fonts_upload->set_title(__('Uploaded Fonts', $this->get_module_name()));
-			static::$s_fonts_upload->load_type('multi_upload');
-			static::$s_fonts_upload->set_callback(array($this,'fonts_list'));
-			static::$s_fonts_upload->set_filter(array_keys($this->filter));
+			$this->s_fonts_upload					= static::$settings->create($this);
+			$this->s_fonts_upload->set_section('uploaded_fonts');
+			$this->s_fonts_upload->set_section_name(__('Font Upload',$this->get_module_name()));
+			$this->s_fonts_upload->set_section_description('');
+			$this->s_fonts_upload->set_ID('uploaded_fonts');
+			$this->s_fonts_upload->set_title(__('Uploaded Fonts', $this->get_module_name()));
+			$this->s_fonts_upload->load_type('multi_upload');
+			$this->s_fonts_upload->set_callback(array($this,'fonts_list'));
+			$this->s_fonts_upload->set_filter(array_keys($this->filter));
 		}
 		private function font_settings(){
-			$fonts									= static::$s_fonts_upload->run_type()->get_data();
+			$fonts									= $this->s_fonts_upload->run_type()->get_data();
 			if($fonts){
 				foreach($fonts as $font){
 					// group by filename without ext
@@ -103,34 +102,34 @@
 						$ext = 'no_ext';
 					}
 
-					if(!isset(static::$s_fonts[$name])){
-						static::$s_fonts[$name]		= array();
+					if(!isset($this->s[$name])){
+						$this->s[$name]		= array();
 					}
 
-					static::$s_fonts[$name]['url'][$ext]	= $url;
+					$this->s[$name]['url'][$ext]	= $url;
 				}
 				$this->font_sub_settings();
 			}
 		}
 		private function font_sub_settings(){
 			// create sub settings
-			if(count(static::$s_fonts) > 0) {
-				foreach(static::$s_fonts as $name => $data) {
-					foreach(static::$s_fields as $field_id => $field_type){
+			if(count($this->s) > 0) {
+				foreach($this->s as $name => $data) {
+					foreach($this->s_fields as $field_id => $field_type){
 						$s = static::$settings->create($this);
 						$s->set_section_group($name);
 						$s->set_section_name($name);
-						$s->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys(static::$s_fonts[$name]['url'])));
+						$s->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys($this->s[$name]['url'])));
 						$s->set_ID('font_' . $name . '_' . $field_id);
-						$s->set_title(static::$s_titles[$field_id]);
-						$s->set_description(static::$s_descriptions[$field_id]);
+						$s->set_title($this->s_titles[$field_id]);
+						$s->set_description($this->s_descriptions[$field_id]);
 
-						if(isset(static::$s_options[$field_id])){
-							$s->set_options(static::$s_options[$field_id]);
+						if(isset($this->s_options[$field_id])){
+							$s->set_options($this->s_options[$field_id]);
 						}
 
 						$s->load_type($field_type);
-						static::$s_fonts[$name]['settings'][$field_id] = $s;
+						$this->s[$name]['settings'][$field_id] = $s;
 					}
 				}
 			}
@@ -174,9 +173,9 @@
 			);
 			$names									= array();
 
-			if(static::$s_fonts) {
+			if($this->s) {
 				echo '<style data-sv_100_module="'.$this->get_module_name().'">';
-				foreach (static::$s_fonts as $name => $data) {
+				foreach ($this->s as $name => $data) {
 					if ($data['settings']['active']->run_type()->get_data() == 1) {
 						$names[$family_name]		= $family_name		= $data['settings']['family_name']->run_type()->get_data();
 						$f = array("\n");
@@ -265,4 +264,3 @@
 			}
 		}
 	}
-?>
