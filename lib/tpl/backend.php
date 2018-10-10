@@ -11,7 +11,7 @@ if(current_user_can('activate_plugins')){
 			</div>
 			<div class="sv_content">
 				<?php
-					echo static::$s_fonts_upload->get_form_field();
+					echo $this->s_fonts_upload->get_form_field();
 					echo static::$settings->get_module_settings_form($this);
 				?>
 			</div>
