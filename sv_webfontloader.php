@@ -76,15 +76,15 @@
 		}
 		private function font_uploader(){
 			// Uploaded Fonts
-			$this->s_fonts_upload					= static::$settings->create($this);
-			$this->s_fonts_upload->set_section('uploaded_fonts');
-			$this->s_fonts_upload->set_section_name(__('Font Upload',$this->get_module_name()));
-			$this->s_fonts_upload->set_section_description('');
-			$this->s_fonts_upload->set_ID('uploaded_fonts');
-			$this->s_fonts_upload->set_title(__('Uploaded Fonts', $this->get_module_name()));
-			$this->s_fonts_upload->load_type('multi_upload');
-			$this->s_fonts_upload->set_callback(array($this,'fonts_list'));
-			$this->s_fonts_upload->set_filter(array_keys($this->filter));
+			$this->s_fonts_upload					= static::$settings->create($this)
+				->set_section('uploaded_fonts')
+				->set_section_name(__('Font Upload',$this->get_module_name()))
+				->set_section_description('')
+				->set_ID('uploaded_fonts')
+				->set_title(__('Uploaded Fonts', $this->get_module_name()))
+				->load_type('multi_upload')
+				->set_callback(array($this,'fonts_list'))
+				->set_filter(array_keys($this->filter));
 		}
 		private function font_settings(){
 			$fonts									= $this->s_fonts_upload->run_type()->get_data();
@@ -116,13 +116,13 @@
 			if(count($this->s) > 0) {
 				foreach($this->s as $name => $data) {
 					foreach($this->s_fields as $field_id => $field_type){
-						$s = static::$settings->create($this);
-						$s->set_section_group($name);
-						$s->set_section_name($name);
-						$s->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys($this->s[$name]['url'])));
-						$s->set_ID('font_' . $name . '_' . $field_id);
-						$s->set_title($this->s_titles[$field_id]);
-						$s->set_description($this->s_descriptions[$field_id]);
+						$s = static::$settings->create($this)
+							->set_section_group($name)
+							->set_section_name($name)
+							->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys($this->s[$name]['url'])))
+							->set_ID('font_' . $name . '_' . $field_id)
+							->set_title($this->s_titles[$field_id])
+							->set_description($this->s_descriptions[$field_id]);
 
 						if(isset($this->s_options[$field_id])){
 							$s->set_options($this->s_options[$field_id]);
