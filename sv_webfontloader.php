@@ -10,16 +10,10 @@
 	 * @license			See license.txt or https://straightvisions.com
 	 */
 	class sv_webfontloader extends init{
+		const section_title							= 'Webfontloader';
+		
 		static $scripts_loaded						= false;
 		private $vendors							= '';
-		private $filter								= array(
-			'svg'									=> 'image/svg+xml',
-			'woff'									=> 'application/octet-stream',
-			'woff2'									=> 'application/octet-stream',
-			'eot'									=> 'application/vnd.ms-fontobject',
-			'ttf'									=> 'application/x-font-ttf',
-			'otf'									=> 'application/font-sfnt'
-		);
 		private $s_fields							= array(
 			'family_name'							=> 'text',
 			'italic'								=> 'checkbox',
@@ -29,7 +23,6 @@
 		private $s_titles							= array();
 		private $s_descriptions						= array();
 		private $s_options							= array();
-		private $s_fonts_fonts_upload						= false;
 
 		public function __construct($path,$url){
 			$this->path								= $path;
@@ -58,36 +51,30 @@
 				'900'								=> '900',
 			);
 			
+			require_once('lib/modules/upload_fonts.php');
+			$this->upload_fonts						= new sv_webfontloader_upload_fonts();
+			$this->upload_fonts->set_root($this->get_root());
+			$this->upload_fonts->set_parent($this);
+			
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
 		}
 		public function admin_init(){
-			add_filter('upload_mimes', array($this, 'upload_mimes'));
+			$this->get_root()->add_section($this, 'settings');
+			$this->get_root()->add_section($this->upload_fonts, 'settings');
 			$this->load_settings();
 		}
 		public function init(){
 			add_action('wp_head', array($this, 'wp_head'));
-			add_action('admin_menu', array($this, 'menu'));
 			$this->module_enqueue_scripts();
 
 			if(!is_admin()){
 				$this->load_settings();
 			}
 		}
-		private function font_uploader(){
-			// Uploaded Fonts
-			$this->s_fonts_upload					= static::$settings->create($this)
-				->set_section('uploaded_fonts')
-				->set_section_name(__('Font Upload',$this->get_module_name()))
-				->set_section_description('')
-				->set_ID('uploaded_fonts')
-				->set_title(__('Uploaded Fonts', $this->get_module_name()))
-				->load_type('multi_upload')
-				->set_callback(array($this,'fonts_list'))
-				->set_filter(array_keys($this->filter));
-		}
 		private function font_settings(){
-			$fonts									= $this->s_fonts_upload->run_type()->get_data();
+			$fonts									= $this->upload_fonts->get_settings()->run_type()->get_data();
+			
 			if($fonts){
 				foreach($fonts as $font){
 					// group by filename without ext
@@ -135,32 +122,7 @@
 			}
 		}
 		public function load_settings(){
-			$this->font_uploader();
 			$this->font_settings();
-		}
-		public function fonts_list($setting): string{
-			$form				= $setting->form();
-			
-			ob_start();
-			require($this->get_path('lib/tpl/backend_upload.php'));
-			$form .= ob_get_contents();
-			ob_end_clean();
-			
-			return $form;
-		}
-		public function upload_mimes($mime_types = array()){
-			// @todo: make sure setting upload mimes is affecting current form only
-			return array_merge($mime_types,$this->filter);
-		}
-		public function menu(){
-			add_submenu_page(
-				'sv_wp_admin',																	// parent slug
-				__('Webfontloader', $this->get_module_name()),											// page title
-				__('Webfontloader', $this->get_module_name()),											// menu title
-				'manage_options',																// capability
-				$this->get_module_name(),																// menu slug
-				function(){ require_once($this->get_path('lib/tpl/backend.php')); }				// callable function
-			);
 		}
 		public function load_custom_fonts(){
 			$formats								= array(
