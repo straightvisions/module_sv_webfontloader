@@ -10,8 +10,6 @@
 	 * @license			See license.txt or https://straightvisions.com
 	 */
 	class sv_webfontloader extends init{
-		const section_title							= 'Webfontloader';
-		
 		static $scripts_loaded						= false;
 		private $vendors							= '';
 		private $s_fields							= array(
@@ -25,6 +23,9 @@
 		private $s_options							= array();
 
 		public function __construct($path,$url){
+			$this->set_section_title('Webfontloader');
+			$this->set_section_desc('Configure Fonts previously uploaded.');
+
 			$this->path								= $path;
 			$this->url								= $url;
 			$this->name								= get_class($this);
@@ -104,12 +105,9 @@
 				foreach($this->s as $name => $data) {
 					foreach($this->s_fields as $field_id => $field_type){
 						$s = static::$settings->create($this)
-							->set_section_group($name)
-							->set_section_name($name)
-							->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys($this->s[$name]['url'])))
 							->set_ID('font_' . $name . '_' . $field_id)
 							->set_title($this->s_titles[$field_id])
-							->set_description($this->s_descriptions[$field_id]);
+							->set_description($this->s_descriptions[$field_id].'<br />'.__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys($this->s[$name]['url'])));
 
 						if(isset($this->s_options[$field_id])){
 							$s->set_options($this->s_options[$field_id]);

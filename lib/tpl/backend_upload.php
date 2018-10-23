@@ -1,4 +1,3 @@
-<p><strong><?php _e('Please reload page after new fonts have been uploaded.', $this->get_module_name()); ?></strong></p>
 <?php
 	if($setting->get_data()){
 	    echo '<div style="max-height:200px;overflow:auto;">';
