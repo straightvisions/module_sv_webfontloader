@@ -10,8 +10,6 @@
 	 * @license			See license.txt or https://straightvisions.com
 	 */
 	class sv_webfontloader_upload_fonts extends sv_webfontloader{
-		const section_title							= 'Webfontloader Upload';
-		
 		private $filter								= array(
 			'svg'									=> 'image/svg+xml',
 			'woff'									=> 'application/octet-stream',
@@ -22,6 +20,9 @@
 		);
 		
 		public function __construct(){
+			$this->set_section_title('Webfontloader Upload');
+			$this->set_section_desc('Please reload page after new fonts have been uploaded.');
+
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
 		}
@@ -40,8 +41,6 @@
 		public function load_settings(){
 			// Uploaded Fonts
 			$this->s					= static::$settings->create($this)
-				->set_section_name(__('Font Upload',$this->get_module_name()))
-				->set_section_description('')
 				->set_ID('uploaded_fonts')
 				->set_title(__('Uploaded Fonts', $this->get_module_name()))
 				->load_type('multi_upload')
