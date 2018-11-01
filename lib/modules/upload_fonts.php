@@ -35,12 +35,9 @@
 				$this->load_settings();
 			}
 		}
-		public function get_settings(){
-			return $this->s;
-		}
 		public function load_settings(){
 			// Uploaded Fonts
-			$this->s					= static::$settings->create($this)
+			$this->s['uploaded_fonts']					= static::$settings->create($this)
 				->set_ID('uploaded_fonts')
 				->set_title(__('Uploaded Fonts', $this->get_module_name()))
 				->load_type('multi_upload')
