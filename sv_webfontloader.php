@@ -12,42 +12,35 @@
 	class sv_webfontloader extends init{
 		static $scripts_loaded						= false;
 		private $vendors							= '';
-		private $filter								= array(
-			'svg'									=> 'image/svg+xml',
-			'woff'									=> 'application/octet-stream',
-			'woff2'									=> 'application/octet-stream',
-			'eot'									=> 'application/vnd.ms-fontobject',
-			'ttf'									=> 'application/x-font-ttf',
-			'otf'									=> 'application/font-sfnt'
-		);
-		private static $s_fields					= array(
+		private $s_fields							= array(
 			'family_name'							=> 'text',
 			'italic'								=> 'checkbox',
 			'weight'								=> 'select',
 			'active'								=> 'checkbox',
 		);
-		private static $s_titles					= array();
-		private static $s_descriptions				= array();
-		private static $s_options					= array();
-		private static $s_fonts_upload				= false;
-		private static $s_fonts						= array();
+		private $s_titles							= array();
+		private $s_descriptions						= array();
+		private $s_options							= array();
 
 		public function __construct($path,$url){
+			$this->set_section_title('Webfontloader');
+			$this->set_section_desc('Configure Fonts previously uploaded.');
+
 			$this->path								= $path;
 			$this->url								= $url;
 			$this->name								= get_class($this);
 			
-			static::$s_titles['family_name']		= __('Family Name', $this->get_module_name());
-			static::$s_titles['italic']				= __('italic', $this->get_module_name());
-			static::$s_titles['weight']				= __('Font Weight', $this->get_module_name());
-			static::$s_titles['active']				= __('active', $this->get_module_name());
+			$this->s_titles['family_name']			= __('Family Name', $this->get_module_name());
+			$this->s_titles['italic']				= __('italic', $this->get_module_name());
+			$this->s_titles['weight']				= __('Font Weight', $this->get_module_name());
+			$this->s_titles['active']				= __('active', $this->get_module_name());
 			
-			static::$s_descriptions['family_name']	= __('Font Family Name, e.g. for CSS', $this->get_module_name());
-			static::$s_descriptions['italic']		= __('If this font is italic version, activate this setting.', $this->get_module_name());
-			static::$s_descriptions['weight']		= __('Please select font weight.', $this->get_module_name());
-			static::$s_descriptions['active']		= __('Only active fonts will be loaded.', $this->get_module_name());
+			$this->s_descriptions['family_name']	= __('Font Family Name, e.g. for CSS', $this->get_module_name());
+			$this->s_descriptions['italic']			= __('If this font is italic version, activate this setting.', $this->get_module_name());
+			$this->s_descriptions['weight']			= __('Please select font weight.', $this->get_module_name());
+			$this->s_descriptions['active']			= __('Only active fonts will be loaded.', $this->get_module_name());
 			
-			static::$s_options['weight']			= array(
+			$this->s_options['weight']				= array(
 				'100'								=> '100',
 				'200'								=> '200',
 				'300'								=> '300',
@@ -59,36 +52,30 @@
 				'900'								=> '900',
 			);
 			
+			require_once('lib/modules/upload_fonts.php');
+			$this->upload_fonts						= new sv_webfontloader_upload_fonts();
+			$this->upload_fonts->set_root($this->get_root());
+			$this->upload_fonts->set_parent($this);
+			
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
 		}
 		public function admin_init(){
-			add_filter('upload_mimes', array($this, 'upload_mimes'));
+			$this->get_root()->add_section($this, 'settings');
+			$this->get_root()->add_section($this->upload_fonts, 'settings');
 			$this->load_settings();
 		}
 		public function init(){
 			add_action('wp_head', array($this, 'wp_head'));
-			add_action('admin_menu', array($this, 'menu'));
 			$this->module_enqueue_scripts();
 
 			if(!is_admin()){
 				$this->load_settings();
 			}
 		}
-		private function font_uploader(){
-			// Uploaded Fonts
-			static::$s_fonts_upload					= static::$settings->create($this);
-			static::$s_fonts_upload->set_section('uploaded_fonts');
-			static::$s_fonts_upload->set_section_name(__('Font Upload',$this->get_module_name()));
-			static::$s_fonts_upload->set_section_description('');
-			static::$s_fonts_upload->set_ID('uploaded_fonts');
-			static::$s_fonts_upload->set_title(__('Uploaded Fonts', $this->get_module_name()));
-			static::$s_fonts_upload->load_type('upload');
-			static::$s_fonts_upload->set_callback(array($this,'fonts_list'));
-			static::$s_fonts_upload->set_filter(array_keys($this->filter));
-		}
 		private function font_settings(){
-			$fonts									= static::$s_fonts_upload->run_type()->get_data();
+			$fonts									= $this->upload_fonts->get_settings()->run_type()->get_data();
+			
 			if($fonts){
 				foreach($fonts as $font){
 					// group by filename without ext
@@ -103,65 +90,37 @@
 						$ext = 'no_ext';
 					}
 
-					if(!isset(static::$s_fonts[$name])){
-						static::$s_fonts[$name]		= array();
+					if(!isset($this->s[$name])){
+						$this->s[$name]		= array();
 					}
 
-					static::$s_fonts[$name]['url'][$ext]	= $url;
+					$this->s[$name]['url'][$ext]	= $url;
 				}
 				$this->font_sub_settings();
 			}
 		}
 		private function font_sub_settings(){
 			// create sub settings
-			if(count(static::$s_fonts) > 0) {
-				foreach(static::$s_fonts as $name => $data) {
-					foreach(static::$s_fields as $field_id => $field_type){
-						$s = static::$settings->create($this);
-						$s->set_section_group($name);
-						$s->set_section_name($name);
-						$s->set_section_description(__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys(static::$s_fonts[$name]['url'])));
-						$s->set_ID('font_' . $name . '_' . $field_id);
-						$s->set_title(static::$s_titles[$field_id]);
-						$s->set_description(static::$s_descriptions[$field_id]);
+			if(count($this->s) > 0) {
+				foreach($this->s as $name => $data) {
+					foreach($this->s_fields as $field_id => $field_type){
+						$s = static::$settings->create($this)
+							->set_ID('font_' . $name . '_' . $field_id)
+							->set_title($this->s_titles[$field_id])
+							->set_description($this->s_descriptions[$field_id].'<br />'.__('Filetypes available: ', $this->get_module_name()).implode(',', array_keys($this->s[$name]['url'])));
 
-						if(isset(static::$s_options[$field_id])){
-							$s->set_options(static::$s_options[$field_id]);
+						if(isset($this->s_options[$field_id])){
+							$s->set_options($this->s_options[$field_id]);
 						}
 
 						$s->load_type($field_type);
-						static::$s_fonts[$name]['settings'][$field_id] = $s;
+						$this->s[$name]['settings'][$field_id] = $s;
 					}
 				}
 			}
 		}
 		public function load_settings(){
-			$this->font_uploader();
 			$this->font_settings();
-		}
-		public function fonts_list($setting): string{
-			$form				= $setting->form();
-			
-			ob_start();
-			require($this->get_path('lib/tpl/backend_upload.php'));
-			$form .= ob_get_contents();
-			ob_end_clean();
-			
-			return $form;
-		}
-		public function upload_mimes($mime_types = array()){
-			// @todo: make sure setting upload mimes is affecting current form only
-			return array_merge($mime_types,$this->filter);
-		}
-		public function menu(){
-			add_submenu_page(
-				'sv_wp_admin',																	// parent slug
-				__('Webfontloader', $this->get_module_name()),											// page title
-				__('Webfontloader', $this->get_module_name()),											// menu title
-				'manage_options',																// capability
-				$this->get_module_name(),																// menu slug
-				function(){ require_once($this->get_path('lib/tpl/backend.php')); }				// callable function
-			);
 		}
 		public function load_custom_fonts(){
 			$formats								= array(
@@ -174,9 +133,9 @@
 			);
 			$names									= array();
 
-			if(static::$s_fonts) {
+			if($this->s) {
 				echo '<style data-sv_100_module="'.$this->get_module_name().'">';
-				foreach (static::$s_fonts as $name => $data) {
+				foreach ($this->s as $name => $data) {
 					if ($data['settings']['active']->run_type()->get_data() == 1) {
 						$names[$family_name]		= $family_name		= $data['settings']['family_name']->run_type()->get_data();
 						$f = array("\n");
@@ -258,11 +217,10 @@
 							opacity:0 !important;
 						}
 						html *{
-							transition: all 0.5s linear;
+							transition: opacity 0.5s linear;
 						}
 					</style>
 				';
 			}
 		}
 	}
-?>
