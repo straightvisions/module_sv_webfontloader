@@ -22,6 +22,7 @@
 		public function __construct(){
 			$this->set_section_title('Webfontloader Upload');
 			$this->set_section_desc('Please reload page after new fonts have been uploaded.');
+			$this->set_section_type('settings');
 
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
