@@ -25,6 +25,7 @@
 		public function __construct($path,$url){
 			$this->set_section_title('Webfontloader');
 			$this->set_section_desc('Configure Fonts previously uploaded.');
+			$this->set_section_type('settings');
 
 			$this->path								= $path;
 			$this->url								= $url;
@@ -61,8 +62,8 @@
 			add_action('init', array($this, 'init'));
 		}
 		public function admin_init(){
-			$this->get_root()->add_section($this, 'settings');
-			$this->get_root()->add_section($this->upload_fonts, 'settings');
+			$this->get_root()->add_section($this);
+			$this->get_root()->add_section($this->upload_fonts);
 			$this->load_settings();
 		}
 		public function init(){
@@ -74,7 +75,7 @@
 			}
 		}
 		private function font_settings(){
-			$fonts									= $this->upload_fonts->get_settings()->run_type()->get_data();
+			$fonts									= $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
 			
 			if($fonts){
 				foreach($fonts as $font){
