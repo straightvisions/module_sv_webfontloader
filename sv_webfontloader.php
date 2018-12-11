@@ -30,17 +30,23 @@
 			$this->path								= $path;
 			$this->url								= $url;
 			$this->name								= get_class($this);
-			
+		}
+		public function admin_init(){
+			$this->get_root()->add_section($this);
+			$this->get_root()->add_section($this->upload_fonts);
+			$this->load_settings();
+		}
+		public function init(){
 			$this->s_titles['family_name']			= __('Family Name', $this->get_module_name());
 			$this->s_titles['italic']				= __('italic', $this->get_module_name());
 			$this->s_titles['weight']				= __('Font Weight', $this->get_module_name());
 			$this->s_titles['active']				= __('active', $this->get_module_name());
-			
+
 			$this->s_descriptions['family_name']	= __('Font Family Name, e.g. for CSS', $this->get_module_name());
 			$this->s_descriptions['italic']			= __('If this font is italic version, activate this setting.', $this->get_module_name());
 			$this->s_descriptions['weight']			= __('Please select font weight.', $this->get_module_name());
 			$this->s_descriptions['active']			= __('Only active fonts will be loaded.', $this->get_module_name());
-			
+
 			$this->s_options['weight']				= array(
 				'100'								=> '100',
 				'200'								=> '200',
@@ -52,21 +58,14 @@
 				'800'								=> '800',
 				'900'								=> '900',
 			);
-			
+
 			require_once('lib/modules/upload_fonts.php');
 			$this->upload_fonts						= new sv_webfontloader_upload_fonts();
 			$this->upload_fonts->set_root($this->get_root());
 			$this->upload_fonts->set_parent($this);
-			
+
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
-		}
-		public function admin_init(){
-			$this->get_root()->add_section($this);
-			$this->get_root()->add_section($this->upload_fonts);
-			$this->load_settings();
-		}
-		public function init(){
 			add_action('wp_head', array($this, 'wp_head'));
 			$this->module_enqueue_scripts();
 
