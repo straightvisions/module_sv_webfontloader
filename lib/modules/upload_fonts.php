@@ -22,6 +22,7 @@
 		public function __construct(){
 			$this->set_section_title('Webfontloader Upload');
 			$this->set_section_desc('Please reload page after new fonts have been uploaded.');
+			$this->set_section_type('settings');
 
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('init', array($this, 'init'));
@@ -35,12 +36,9 @@
 				$this->load_settings();
 			}
 		}
-		public function get_settings(){
-			return $this->s;
-		}
 		public function load_settings(){
 			// Uploaded Fonts
-			$this->s					= static::$settings->create($this)
+			$this->s['uploaded_fonts']					= static::$settings->create($this)
 				->set_ID('uploaded_fonts')
 				->set_title(__('Uploaded Fonts', $this->get_module_name()))
 				->load_type('multi_upload')
