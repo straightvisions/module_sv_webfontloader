@@ -139,6 +139,8 @@
 						$f = array("\n");
 						$f[] = '@font-face {';
 						$f[] = 'font-family: "' . $family_name . '";';
+						$f[] = 'font-display: fallback;';
+
 
 						// src
 						$urls						= $data['url'];
@@ -210,6 +212,10 @@
 						}
 						;
 					</script>
+				';
+
+				/* // this reduces pagespeed score, so deactivated
+				echo '
 					<style data-sv_100_module="'.$this->get_module_name().'">
 						html:not(.wf-inactive):not(.wf-active) *{
 							opacity:0 !important;
@@ -219,6 +225,7 @@
 						}
 					</style>
 				';
+				*/
 			}
 		}
 	}
