@@ -34,9 +34,26 @@ class sv_webfontloader_upload_fonts extends sv_webfontloader {
 		$this->load_settings();
 
 		// Action Hooks
-		add_filter( 'upload_mimes', array( $this, 'upload_mimes' ) );
+		add_filter( 'mime_types', array( $this, 'mime_types' ));
+		add_filter('wp_check_filetype_and_ext', array( $this, 'wp_check_filetype_and_ext'), 10, 4);
 	}
+	/*
+	 * since WP 5.0.1, file ext and mime type must match.
+	 * As there are different mime types possible for some extensions,
+	 * we need to allow multiple mime types per file extension.
+	 */
+	public function wp_check_filetype_and_ext($check, $file, $filename, $mimes){
+		if ( empty( $check['ext'] ) && empty( $check['type'] ) ) {
+			// Adjust to your needs!
+			$secondary_mime = [ 'ttf' => 'application/font-sfnt' ];
 
+			// Run another check, but only for our secondary mime and not on core mime types.
+			remove_filter( 'wp_check_filetype_and_ext', array( $this, 'wp_check_filetype_and_ext'), 99, 4 );
+			$check = wp_check_filetype_and_ext( $file, $filename, $secondary_mime );
+			add_filter( 'wp_check_filetype_and_ext',array( $this, 'wp_check_filetype_and_ext'), 99, 4 );
+		}
+		return $check;
+	}
 	public function load_settings() {
 		// Uploaded Fonts
 		$this->s['uploaded_fonts']					= static::$settings->create( $this )
@@ -47,7 +64,7 @@ class sv_webfontloader_upload_fonts extends sv_webfontloader {
 			->set_filter( array_keys( $this->filter ) );
 	}
 
-	public function upload_mimes( $mime_types = array() ) {
+	public function mime_types( $mime_types = array() ) {
 		// @todo: make sure setting upload mimes is affecting current form only
 		return array_merge( $mime_types, $this->filter );
 	}
