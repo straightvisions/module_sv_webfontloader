@@ -72,25 +72,18 @@ class sv_webfontloader extends init {
 		$this->upload_fonts						= new sv_webfontloader_upload_fonts();
 		$this->upload_fonts->set_root( $this->get_root( ));
 		$this->upload_fonts->set_parent( $this );
+		$this->upload_fonts->init();
 
 		// Action Hooks
-		//add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'wp_head', array( $this, 'wp_head' ) );
 
+		// Section Info
 		$this->get_root()->add_section( $this );
 		$this->get_root()->add_section( $this->upload_fonts );
 
 		// Loads Settings
 		$this->load_settings();
 	}
-
-	public function admin_init() {
-		$this->get_root()->add_section( $this );
-		$this->get_root()->add_section( $this->upload_fonts );
-		$this->load_settings();
-	}
-
-
 	private function font_settings() {
 		$fonts									= $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
 

@@ -30,20 +30,11 @@ class sv_webfontloader_upload_fonts extends sv_webfontloader {
 		$this->set_section_desc( __( 'Please reload page after new fonts have been uploaded.', $this->get_module_name() ) );
 		$this->set_section_type( 'settings' );
 
-		// Action Hooks
-		//add_action( 'admin_init', array( $this, 'admin_init' ) );
-		add_filter( 'upload_mimes', array( $this, 'upload_mimes' ) );
-
 		// Loads Settings
 		$this->load_settings();
-	}
 
-	public function admin_init() {
 		// Action Hooks
 		add_filter( 'upload_mimes', array( $this, 'upload_mimes' ) );
-
-		// Loads Settings
-		$this->load_settings();
 	}
 
 	public function load_settings() {
