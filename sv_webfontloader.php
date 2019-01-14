@@ -53,26 +53,23 @@
 				'900'								=> '900',
 			);
 			
-			require_once('lib/modules/upload_fonts.php');
+			require_once($this->get_file_path('lib/modules/upload_fonts.php'));
 			$this->upload_fonts						= new sv_webfontloader_upload_fonts();
 			$this->upload_fonts->set_root($this->get_root());
 			$this->upload_fonts->set_parent($this);
 			
 			add_action('admin_init', array($this, 'admin_init'));
-			add_action('init', array($this, 'init'));
+			add_action('wp_head', array($this, 'wp_head'));
+			$this->module_enqueue_scripts();
+			
+			if(!is_admin()){
+				add_action('init', array($this, 'load_settings'));
+			}
 		}
 		public function admin_init(){
 			$this->get_root()->add_section($this);
 			$this->get_root()->add_section($this->upload_fonts);
 			$this->load_settings();
-		}
-		public function init(){
-			add_action('wp_head', array($this, 'wp_head'));
-			$this->module_enqueue_scripts();
-
-			if(!is_admin()){
-				$this->load_settings();
-			}
 		}
 		private function font_settings(){
 			$fonts									= $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
@@ -142,6 +139,8 @@
 						$f = array("\n");
 						$f[] = '@font-face {';
 						$f[] = 'font-family: "' . $family_name . '";';
+						$f[] = 'font-display: fallback;';
+
 
 						// src
 						$urls						= $data['url'];
@@ -213,6 +212,10 @@
 						}
 						;
 					</script>
+				';
+
+				/* // this reduces pagespeed score, so deactivated
+				echo '
 					<style data-sv_100_module="'.$this->get_module_name().'">
 						html:not(.wf-inactive):not(.wf-active) *{
 							opacity:0 !important;
@@ -222,6 +225,7 @@
 						}
 					</style>
 				';
+				*/
 			}
 		}
 	}
