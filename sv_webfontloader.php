@@ -57,6 +57,11 @@
 			$this->upload_fonts						= new sv_webfontloader_upload_fonts();
 			$this->upload_fonts->set_root($this->get_root());
 			$this->upload_fonts->set_parent($this);
+
+			require_once($this->get_file_path('lib/modules/icon_fonts.php'));
+			$this->icon_fonts						= new sv_webfontloader_icon_fonts();
+			$this->icon_fonts->set_root($this->get_root());
+			$this->icon_fonts->set_parent($this);
 			
 			add_action('admin_init', array($this, 'admin_init'));
 			add_action('wp_head', array($this, 'wp_head'));
@@ -69,6 +74,7 @@
 		public function admin_init(){
 			$this->get_root()->add_section($this);
 			$this->get_root()->add_section($this->upload_fonts);
+			$this->get_root()->add_section($this->icon_fonts);
 			$this->load_settings();
 		}
 		private function font_settings(){
