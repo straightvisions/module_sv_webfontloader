@@ -26,7 +26,7 @@
 				$this->load_settings();
 
 				if($this->s['dashicons']->run_type()->get_data() == '1') {
-					$this->add_style(false, 'icon_fonts/dashicons/dashicons.css', false);
+					$this->add_style(true, 'icon_fonts/dashicons/dashicons.css', false);
 				}
 			}
 		}
