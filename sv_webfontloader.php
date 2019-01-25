@@ -74,12 +74,19 @@ class sv_webfontloader extends init {
 		$this->upload_fonts->set_parent( $this );
 		$this->upload_fonts->init();
 
+		require_once($this->get_file_path('lib/modules/icon_fonts.php'));
+
+		$this->icon_fonts						= new sv_webfontloader_icon_fonts();
+		$this->icon_fonts->set_root($this->get_root());
+		$this->icon_fonts->set_parent($this);
+
 		// Action Hooks
 		add_action( 'wp_head', array( $this, 'wp_head' ) );
 
 		// Section Info
 		$this->get_root()->add_section( $this );
 		$this->get_root()->add_section( $this->upload_fonts );
+		$this->get_root()->add_section( $this->icon_fonts );
 
 		// Loads Settings
 		$this->load_settings();
