@@ -79,6 +79,7 @@ class sv_webfontloader extends init {
 		$this->icon_fonts						= new sv_webfontloader_icon_fonts();
 		$this->icon_fonts->set_root($this->get_root());
 		$this->icon_fonts->set_parent($this);
+		$this->icon_fonts->init();
 
 		// Action Hooks
 		add_action( 'wp_head', array( $this, 'wp_head' ) );
