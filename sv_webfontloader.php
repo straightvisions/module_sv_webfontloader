@@ -2,9 +2,9 @@
 namespace sv_100;
 
 /**
- * @author			Matthias Reuter
+ * @author			straightvisions GmbH
  * @package			sv_100
- * @copyright		2017 Matthias Reuter
+ * @copyright		2017 straightvisions GmbH
  * @link			https://straightvisions.com
  * @since			1.0
  * @license			See license.txt or https://straightvisions.com
