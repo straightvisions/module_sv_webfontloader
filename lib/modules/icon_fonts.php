@@ -25,7 +25,10 @@ class sv_webfontloader_icon_fonts extends sv_webfontloader {
 
 		if(!is_admin()){
 			if($this->s['dashicons']->run_type()->get_data() == '1') {
-				$this->add_style(true, 'icon_fonts/dashicons/dashicons.css', false);
+				// Loads Styles
+				static::$scripts->create( $this )
+					->set_ID( $this->get_prefix() )
+					->set_source( $this->get_file_url( 'lib/icon_fonts/dashicons/dashicons.css' ), $this->get_file_path( 'lib/icon_fonts/dashicons/dashicons.css' ) );
 			}
 		}
 	}
