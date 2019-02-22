@@ -20,6 +20,7 @@ class sv_webfontloader_icon_fonts extends sv_webfontloader {
 		$this->set_section_desc( 'Activate Icon Fonts' );
 		$this->set_section_type( 'settings' );
 
+		add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 99 );
 		$this->load_settings();
 
 		if(!is_admin()){
@@ -28,10 +29,11 @@ class sv_webfontloader_icon_fonts extends sv_webfontloader {
 			}
 		}
 	}
+	public function wp_enqueue_scripts(){
+		wp_dequeue_style('dashicons');
+	}
 	public function load_settings(){
 		// Icon Fonts
-		wp_dequeue_style('dashicons');
-
 		$this->s['dashicons']					= static::$settings->create($this)
 		                                                            ->set_ID('dashicons')
 		                                                            ->set_title(__('Dashicons', $this->get_module_name()))
