@@ -73,7 +73,7 @@ class sv_webfontloader_upload_fonts extends sv_webfontloader {
 		$form				= $setting->form();
 
 		ob_start();
-		require_once( $this->get_path( 'lib/tpl/backend_upload.php' ) ); //@todo check why get_file_path throws false
+		require_once( $this->get_path( 'lib/tpl/backend_upload.php' ) );
 		$form .= ob_get_contents();
 		ob_end_clean();
 
