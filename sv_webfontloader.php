@@ -38,10 +38,13 @@ class sv_webfontloader extends init {
 		$this->set_section_type( 'settings' );
 
 		// Loads Scripts
+		// @todo: migrate backend js to core
 		static::$scripts->create( $this )
-		                ->set_path( 'lib/js/backend.js' )
-		                ->set_is_backend()
-		                ->set_type( 'js' );
+			->set_ID('backend')
+			->set_path( 'lib/js/backend.js' )
+			->set_is_backend()
+			->set_type( 'js' )
+			->set_is_enqueued();
 
 		// Font Settings
 		$this->s_titles['family_name']			= __( 'Family Name', $this->get_module_name() );
