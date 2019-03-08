@@ -22,13 +22,14 @@ class sv_webfontloader_icon_fonts extends sv_webfontloader {
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 99 );
 		$this->load_settings();
-
+		
 		if(!is_admin()){
 			if($this->s['dashicons']->run_type()->get_data() == '1') {
 				// Loads Styles
 				static::$scripts->create( $this )
-					->set_ID( $this->get_prefix() )
-					->set_path('lib/icon_fonts/dashicons/dashicons.css');
+					->set_ID( 'dashicons' )
+					->set_path('lib/icon_fonts/dashicons/dashicons.css')
+					->set_is_enqueued();
 			}
 		}
 	}
