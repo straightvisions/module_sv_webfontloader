@@ -96,8 +96,13 @@ class sv_webfontloader extends init {
 		// Loads Settings
 		$this->load_settings();
 	}
+
+	public function get_fonts() :array {
+		return $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
+	}
+
 	private function font_settings() {
-		$fonts									= $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
+		$fonts									= $this->get_fonts();
 
 		if($fonts){
 			foreach($fonts as $font){
