@@ -38,10 +38,13 @@ class sv_webfontloader extends init {
 		$this->set_section_type( 'settings' );
 
 		// Loads Scripts
+		// @todo: migrate backend js to core
 		static::$scripts->create( $this )
-		                ->set_source( $this->get_file_url( 'lib/js/backend.js' ), $this->get_file_path( 'lib/js/backend.js' ) )
-		                ->set_is_backend()
-		                ->set_type( 'js' );
+			->set_ID('backend')
+			->set_path( 'lib/js/backend.js' )
+			->set_is_backend()
+			->set_type( 'js' )
+			->set_is_enqueued();
 
 		// Font Settings
 		$this->s_titles['family_name']			= __( 'Family Name', $this->get_module_name() );
@@ -67,7 +70,7 @@ class sv_webfontloader extends init {
 		);
 
 		// Includes
-		require_once( $this->get_file_path( 'lib/modules/upload_fonts.php' ) );
+		require_once( $this->get_path( 'lib/modules/upload_fonts.php' ) );
 
 		// Upload Settings
 		$this->upload_fonts						= new sv_webfontloader_upload_fonts();
@@ -75,7 +78,7 @@ class sv_webfontloader extends init {
 		$this->upload_fonts->set_parent( $this );
 		$this->upload_fonts->init();
 
-		require_once($this->get_file_path('lib/modules/icon_fonts.php'));
+		require_once($this->get_path('lib/modules/icon_fonts.php'));
 
 		$this->icon_fonts						= new sv_webfontloader_icon_fonts();
 		$this->icon_fonts->set_root($this->get_root());
@@ -93,8 +96,13 @@ class sv_webfontloader extends init {
 		// Loads Settings
 		$this->load_settings();
 	}
+
+	public function get_fonts() :array {
+		return $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
+	}
+
 	private function font_settings() {
-		$fonts									= $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
+		$fonts									= $this->get_fonts();
 
 		if($fonts){
 			foreach($fonts as $font){
