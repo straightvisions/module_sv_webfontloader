@@ -28,13 +28,16 @@ class sv_webfontloader extends init {
 	}
 
 	public function init() {
+		// Translates the module
+		load_theme_textdomain( $this->get_module_name(), $this->get_path( 'languages' ) );
+
 		// Module Info
 		$this->set_module_title( 'SV Webfontloader' );
 		$this->set_module_desc( __( 'This module gives the ability to upload & manage webfonts.', $this->get_module_name() ) );
 
 		// Section Info
 		$this->set_section_title( 'Webfontloader' );
-		$this->set_section_desc( 'Configure Fonts previously uploaded.' );
+		$this->set_section_desc( __( 'Configure Fonts previously uploaded.', $this->get_module_name() ) );
 		$this->set_section_type( 'settings' );
 
 		// Loads Scripts
