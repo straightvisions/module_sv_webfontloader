@@ -26,7 +26,7 @@ class sv_webfontloader_icon_fonts extends sv_webfontloader {
 		if(!is_admin()){
 			if($this->s['dashicons']->run_type()->get_data() == '1') {
 				// Loads Styles
-				static::$scripts->create( $this )
+				static::$scripts->create( $this->get_parent() )
 					->set_ID( 'dashicons' )
 					->set_path('lib/icon_fonts/dashicons/dashicons.css')
 					->set_is_enqueued();
