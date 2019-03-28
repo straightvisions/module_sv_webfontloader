@@ -23,25 +23,29 @@ class sv_webfontloader_icon_fonts extends sv_webfontloader {
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 99 );
 		$this->load_settings();
 		
-		if(!is_admin()){
-			if($this->s['dashicons']->run_type()->get_data() == '1') {
+		if ( !is_admin() ) {
+			if ( $this->s['dashicons']->run_type()->get_data() == '1') {
 				// Loads Styles
-				static::$scripts->create( $this->get_parent() )
+				static::$scripts
+					->create( $this->get_parent() )
 					->set_ID( 'dashicons' )
-					->set_path('lib/icon_fonts/dashicons/dashicons.css')
+					->set_path( 'lib/backend/icon_fonts/dashicons/dashicons.css' )
 					->set_is_enqueued();
 			}
 		}
 	}
+
 	public function wp_enqueue_scripts(){
-		wp_dequeue_style('dashicons');
+		wp_dequeue_style( 'dashicons' );
 	}
-	public function load_settings(){
+
+	public function load_settings() {
 		// Icon Fonts
-		$this->s['dashicons']					= static::$settings->create($this)
-		                                                            ->set_ID('dashicons')
-		                                                            ->set_title(__('Dashicons', $this->get_module_name()))
-		                                                            ->set_description(__('Load Dashicons from WordPress in Frontend.', $this->get_module_name()))
-		                                                            ->load_type('checkbox');
+		$this->s['dashicons']					= static::$settings
+			->create( $this )
+			->set_ID( 'dashicons' )
+			->set_title( __( 'Dashicons', $this->get_module_name() ) )
+			->set_description( __( 'Load Dashicons from WordPress in Frontend.', $this->get_module_name() ) )
+			->load_type( 'checkbox' );
 	}
 }

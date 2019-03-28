@@ -40,15 +40,43 @@ class sv_webfontloader extends init {
 		$this->set_section_desc( __( 'Configure Fonts previously uploaded.', $this->get_module_name() ) );
 		$this->set_section_type( 'settings' );
 
-		// Loads Scripts
-		// @todo: migrate backend js to core
-		static::$scripts->create( $this )
-			->set_ID('backend')
-			->set_path( 'lib/js/backend.js' )
+		// Action Hooks
+		add_action( 'wp_head', array( $this, 'wp_head' ) );
+
+		// Loads Settings
+		$this->load_modules()
+		     ->load_scripts()
+		     ->set_font_settings()
+		     ->load_upload_settings()
+		     ->load_font_settings()
+		     ->load_icon_fonts();
+
+		// Section Info
+		$this->get_root()->add_section( $this );
+		$this->get_root()->add_section( $this->upload_fonts );
+		$this->get_root()->add_section( $this->icon_fonts );
+	}
+
+	protected function load_modules() :sv_webfontloader {
+		require_once( $this->get_path( 'lib/backend/modules/upload_fonts.php' ) );
+		require_once( $this->get_path( 'lib/backend/modules/icon_fonts.php') );
+
+		return $this;
+	}
+
+	protected function load_scripts() :sv_webfontloader {
+		static::$scripts
+			->create( $this )
+			->set_ID( 'default_js' )
+			->set_path( 'lib/backend/js/default.js' )
 			->set_is_backend()
 			->set_type( 'js' )
 			->set_is_enqueued();
 
+		return $this;
+	}
+
+	protected function set_font_settings() :sv_webfontloader {
 		// Font Settings
 		$this->s_titles['family_name']			= __( 'Family Name', $this->get_module_name() );
 		$this->s_titles['italic']				= __( 'italic', $this->get_module_name() );
@@ -72,39 +100,23 @@ class sv_webfontloader extends init {
 			'900'								=> '900',
 		);
 
-		// Includes
-		require_once( $this->get_path( 'lib/modules/upload_fonts.php' ) );
+		return $this;
+	}
 
-		// Upload Settings
+	protected function load_upload_settings() :sv_webfontloader {
 		$this->upload_fonts						= new sv_webfontloader_upload_fonts();
 		$this->upload_fonts->set_root( $this->get_root( ));
 		$this->upload_fonts->set_parent( $this );
 		$this->upload_fonts->init();
 
-		require_once($this->get_path('lib/modules/icon_fonts.php'));
-
-		$this->icon_fonts						= new sv_webfontloader_icon_fonts();
-		$this->icon_fonts->set_root($this->get_root());
-		$this->icon_fonts->set_parent($this);
-		$this->icon_fonts->init();
-
-		// Action Hooks
-		add_action( 'wp_head', array( $this, 'wp_head' ) );
-
-		// Section Info
-		$this->get_root()->add_section( $this );
-		$this->get_root()->add_section( $this->upload_fonts );
-		$this->get_root()->add_section( $this->icon_fonts );
-
-		// Loads Settings
-		$this->load_settings();
+		return $this;
 	}
 
 	public function get_fonts() :array {
 		return $this->upload_fonts->get_settings()['uploaded_fonts']->run_type()->get_data();
 	}
 
-	private function font_settings() {
+	private function load_font_settings() :sv_webfontloader {
 		$fonts									= $this->get_fonts();
 
 		if($fonts){
@@ -127,11 +139,14 @@ class sv_webfontloader extends init {
 
 				$this->s[$name]['url'][$ext]	= $url;
 			}
-			$this->font_sub_settings();
+
+			$this->load_font_sub_settings();
 		}
+
+		return $this;
 	}
 
-	private function font_sub_settings() {
+	private function load_font_sub_settings() :sv_webfontloader {
 		// create sub settings
 		if(count($this->s) > 0) {
 			foreach($this->s as $name => $data) {
@@ -150,10 +165,8 @@ class sv_webfontloader extends init {
 				}
 			}
 		}
-	}
 
-	public function load_settings() {
-		$this->font_settings();
+		return $this;
 	}
 
 	public function load_custom_fonts() {
@@ -202,6 +215,15 @@ class sv_webfontloader extends init {
 
 			$this->vendors .= 'custom: { families: ["' . implode('","', $names) . '"] }';
 		}
+	}
+
+	protected function load_icon_fonts() :sv_webfontloader {
+		$this->icon_fonts						= new sv_webfontloader_icon_fonts();
+		$this->icon_fonts->set_root($this->get_root());
+		$this->icon_fonts->set_parent($this);
+		$this->icon_fonts->init();
+
+		return $this;
 	}
 
 	public function wp_head() {
