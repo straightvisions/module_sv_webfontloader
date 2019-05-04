@@ -67,6 +67,14 @@ class sv_webfontloader extends init {
 	protected function load_scripts() :sv_webfontloader {
 		static::$scripts
 			->create( $this )
+			->set_ID( 'default' )
+			->set_path( 'lib/backend/css/default.css' )
+			->set_is_backend()
+			->set_inline( true )
+			->set_is_enqueued();
+		
+		static::$scripts
+			->create( $this )
 			->set_ID( 'default_js' )
 			->set_path( 'lib/backend/js/default.js' )
 			->set_is_backend()
