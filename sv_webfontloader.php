@@ -48,6 +48,12 @@
 		}
 		
 		protected function load_settings(): sv_webfontloader {
+			$this->s['test_font'] =
+				static::$settings->create( $this )
+								 ->set_ID( 'test_font' )
+								 ->set_title( __( 'Test Font', $this->get_module_name() ) )
+								 ->load_type( 'upload' );
+			
 			$this->s['fonts'] =
 				static::$settings->create( $this )
 								 ->set_ID( 'fonts' )
