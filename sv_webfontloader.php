@@ -52,7 +52,8 @@
 				static::$settings->create( $this )
 								 ->set_ID( 'test_font' )
 								 ->set_title( __( 'Test Font', $this->get_module_name() ) )
-								 ->load_type( 'upload' );
+								 ->load_type( 'upload' )
+					->run_type()->set_allowed_filetypes(array('.ttf'));
 			
 			$this->s['fonts'] =
 				static::$settings->create( $this )
@@ -110,7 +111,8 @@
 				->set_ID( 'file_ttf' )
 				->set_title( __( 'TrueType (.ttf)', $this->get_module_name() ) )
 				->set_description( __( 'Select or drag-and-drop your .ttf file here.', $this->get_module_name() ) )
-				->load_type( 'upload' );
+				->load_type( 'upload' )
+				->run_type()->set_allowed_filetypes(array('.ttf'));
 			
 			$this->s['fonts']
 				->run_type()
@@ -118,7 +120,8 @@
 				->set_ID( 'file_otf' )
 				->set_title( __( 'OpenType (.otf)', $this->get_module_name() ) )
 				->set_description( __( 'Select or drag-and-drop your .otf file here.', $this->get_module_name() ) )
-				->load_type( 'upload' );
+				->load_type( 'upload' )
+				->run_type()->set_allowed_filetypes(array('.otf'));
 			
 			$this->s['fonts']
 				->run_type()
@@ -126,7 +129,8 @@
 				->set_ID( 'file_woff' )
 				->set_title( __( 'Web Open Font Format (.woff)', $this->get_module_name() ) )
 				->set_description( __( 'Select or drag-and-drop your .woff file here.', $this->get_module_name() ) )
-				->load_type( 'upload' );
+				->load_type( 'upload' )
+				->run_type()->set_allowed_filetypes(array('.woff'));
 			
 			$this->s['fonts']
 				->run_type()
@@ -134,7 +138,8 @@
 				->set_ID( 'file_woff2' )
 				->set_title( __( 'Web Open Font Format 2.0 (.woff2)', $this->get_module_name() ) )
 				->set_description( __( 'Select or drag-and-drop your .woff2 file here.', $this->get_module_name() ) )
-				->load_type( 'upload' );
+				->load_type( 'upload' )
+				->run_type()->set_allowed_filetypes(array('.woff2'));
 			
 			return $this;
 		}
