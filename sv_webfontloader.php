@@ -48,13 +48,6 @@
 		}
 		
 		protected function load_settings(): sv_webfontloader {
-			$this->s['test_font'] =
-				static::$settings->create( $this )
-								 ->set_ID( 'test_font' )
-								 ->set_title( __( 'Test Font', $this->get_module_name() ) )
-								 ->load_type( 'upload' )
-					->run_type()->set_allowed_filetypes(array('.ttf'));
-			
 			$this->s['fonts'] =
 				static::$settings->create( $this )
 								 ->set_ID( 'fonts' )
@@ -170,22 +163,22 @@
 						
 						// TrueType .ttf
 						if ( $font['file_ttf'] && ! empty( $font['file_ttf'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . $font['file_ttf'] . '") format("truetype");';
+							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_ttf']['file'] )  . '") format("truetype");';
 						}
 						
 						// OpenType .otf
 						if ( $font['file_otf'] && ! empty( $font['file_otf'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . $font['file_otf'] . '") format("opentype");';
+							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_otf']['file'] ) . '") format("opentype");';
 						}
 						
 						// Web Open Font Format .woff
 						if ( $font['file_woff'] && ! empty( $font['file_woff'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . $font['file_woff'] . '") format("woff");';
+							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_woff']['file'] ) . '") format("woff");';
 						}
 						
 						// Web Open Font Format 2.0 .woff2
 						if ( $font['file_woff2'] && ! empty( $font['file_woff2'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . $font['file_woff2'] . '") format("woff2");';
+							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_woff2']['file'] ) . '") format("woff2");';
 						}
 
 						$output[]		= implode( "\n", $urls );
