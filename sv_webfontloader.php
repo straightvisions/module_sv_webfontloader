@@ -58,8 +58,17 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'entry_label' )
+				->set_title( __( 'Font Label', $this->get_module_name() ) )
+				->set_description( __( 'A label to differentiate your uploaded fonts.', $this->get_module_name() ) )
+				->load_type( 'text' )
+				->set_placeholder( __( 'Label', $this->get_module_name() ) );
+			
+			$this->s['fonts']
+				->run_type()
+				->add_child( $this )
+				->set_ID( 'family' )
 				->set_title( __( 'Font family', $this->get_module_name() ) )
-				->set_description( __( 'The name of the font family.', $this->get_module_name() ) )
+				->set_description( __( 'The name of the font family, that this font belongs too.', $this->get_module_name() ) )
 				->load_type( 'text' )
 				->set_placeholder( __( 'Name', $this->get_module_name() ) );
 			
@@ -147,7 +156,7 @@
 					if ( $font['active'] === '1' ) {
 						$output 		= array();
 						$output[]		= '@font-face {';
-						$output[]		= "\t" . 'font-family: "' . $font['entry_label'] . '";';
+						$output[]		= "\t" . 'font-family: "' . $font['family'] . '";';
 						$output[]		= "\t" . 'font-display: fallback;';
 						
 						// Font Weight
@@ -162,22 +171,22 @@
 						$urls			= array();
 						
 						// TrueType .ttf
-						if ( $font['file_ttf'] && ! empty( $font['file_ttf'] ) ) {
+						if ( isset( $font['file_ttf'] ) && ! empty( $font['file_ttf'] ) ) {
 							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_ttf']['file'] )  . '") format("truetype");';
 						}
 						
 						// OpenType .otf
-						if ( $font['file_otf'] && ! empty( $font['file_otf'] ) ) {
+						if ( isset( $font['file_otf'] ) && ! empty( $font['file_otf'] ) ) {
 							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_otf']['file'] ) . '") format("opentype");';
 						}
 						
 						// Web Open Font Format .woff
-						if ( $font['file_woff'] && ! empty( $font['file_woff'] ) ) {
+						if ( isset( $font['file_woff'] ) && ! empty( $font['file_woff'] ) ) {
 							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_woff']['file'] ) . '") format("woff");';
 						}
 						
 						// Web Open Font Format 2.0 .woff2
-						if ( $font['file_woff2'] && ! empty( $font['file_woff2'] ) ) {
+						if ( isset( $font['file_woff2'] ) && ! empty( $font['file_woff2'] ) ) {
 							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_woff2']['file'] ) . '") format("woff2");';
 						}
 
