@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sv_webfontloader\n"
-"POT-Creation-Date: 2019-03-19 19:17+0100\n"
-"PO-Revision-Date: 2019-03-19 19:21+0100\n"
+"POT-Creation-Date: 2019-05-20 11:38+0200\n"
+"PO-Revision-Date: 2019-05-20 11:39+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.2\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
@@ -19,74 +19,140 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
 "_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: lib/modules/icon_fonts.php:43
-msgid "Dashicons"
-msgstr "Dashicons"
+#: sv_webfontloader.php:25 sv_webfontloader.php:29
+msgid "Upload and manage fonts."
+msgstr "Schriften hochladen und verwalten."
 
-#: lib/modules/icon_fonts.php:44
-msgid "Load Dashicons from WordPress in Frontend."
-msgstr "Lade Dashicons von WordPress im Frontend."
-
-#: lib/modules/upload_fonts.php:30
-msgid "Please reload page after new fonts have been uploaded."
-msgstr "Bitte lade die Seite neu, nachdem neue Schriften hochgeladen wurden."
-
-#: lib/modules/upload_fonts.php:61
-msgid "Uploaded Fonts"
-msgstr "Hochgeladene Schriften"
-
-#: lib/tpl/backend_upload.php:9
-msgid "No fonts uploaded yet"
-msgstr "Noch keine Schriften hochgeladen"
-
-#: sv_webfontloader.php:36
-msgid "This module gives the ability to upload & manage webfonts."
-msgstr ""
-"Dieses Modul gibt die Möglichkeit, Webschriften hochzuladen und zu "
-"verwalten."
-
-#: sv_webfontloader.php:40
-msgid "Configure Fonts previously uploaded."
-msgstr "Konfiguriere Schriften, die zuvor hochgeladen wurden."
-
-#: sv_webfontloader.php:53
-msgid "Family Name"
-msgstr "Schriftfamilie"
+#: sv_webfontloader.php:28
+msgid "Fonts"
+msgstr "Schriftarten"
 
 #: sv_webfontloader.php:54
-msgid "italic"
-msgstr "Kursiv"
-
-#: sv_webfontloader.php:55
-msgid "Font Weight"
-msgstr "Schriftstärke"
-
-#: sv_webfontloader.php:56
-msgid "active"
-msgstr "Aktiv"
-
-#: sv_webfontloader.php:58
-msgid "Font Family Name, e.g. for CSS"
-msgstr "Name der Schriftfamilie, z.B. für CSS"
-
-#: sv_webfontloader.php:59
-msgid "If this font is italic version, activate this setting."
-msgstr "Wenn diese Schriftart kursiv ist, aktiviere diese Einstellung."
-
-#: sv_webfontloader.php:60
-msgid "Please select font weight."
-msgstr "Bitte wähle die Schriftstärke aus."
+msgid "Add a new font"
+msgstr "Neue Schriftart hinzufügen"
 
 #: sv_webfontloader.php:61
-msgid "Only active fonts will be loaded."
-msgstr "Es werden nur aktive Schriften geladen."
+msgid "Font Label"
+msgstr "Beschriftung"
+
+#: sv_webfontloader.php:62
+msgid "A label to differentiate your uploaded fonts."
+msgstr "Eine Beschriftung, um Ihre hochgeladenen Schriften zu unterscheiden."
+
+#: sv_webfontloader.php:64
+msgid "Label"
+msgstr "Beschriftung"
+
+#: sv_webfontloader.php:70
+msgid "Font family"
+msgstr "Schriftart (Font Family)"
+
+#: sv_webfontloader.php:71
+msgid "The name of the font family."
+msgstr "Der Name der Schriftart (Font Family)."
+
+#: sv_webfontloader.php:73
+msgid "Name"
+msgstr ""
+
+#: sv_webfontloader.php:79
+msgid "Active"
+msgstr "Aktiv"
+
+#: sv_webfontloader.php:80
+msgid "Activate or deactivate this font."
+msgstr "Aktiviere oder deaktiviere diese Schriftart."
+
+#: sv_webfontloader.php:87
+msgid "Italic"
+msgstr "Kursiv"
+
+#: sv_webfontloader.php:88
+msgid "Is the font italic?"
+msgstr "Ist die Schriftart kursiv?"
+
+#: sv_webfontloader.php:95
+msgid "Font weight"
+msgstr "Schriftstärke"
+
+#: sv_webfontloader.php:96
+msgid "Select the font weight."
+msgstr "Wähle die Schriftstärke aus."
+
+#: sv_webfontloader.php:114
+msgid "TrueType (.ttf)"
+msgstr "TrueType (.ttf)"
+
+#: sv_webfontloader.php:115
+msgid "Select or drag-and-drop your .ttf file here."
+msgstr ""
+"Wähle hier die .ttf-Datei aus oder ziehe sie per Drag-And-Drop ins Feld."
+
+#: sv_webfontloader.php:123
+msgid "OpenType (.otf)"
+msgstr "OpenType (.otf)"
+
+#: sv_webfontloader.php:124
+msgid "Select or drag-and-drop your .otf file here."
+msgstr ""
+"Wähle hier die .otf-Datei aus oder ziehe sie per Drag-And-Drop ins Feld."
+
+#: sv_webfontloader.php:132
+msgid "Web Open Font Format (.woff)"
+msgstr "Web Open Font Format (.woff)"
+
+#: sv_webfontloader.php:133
+msgid "Select or drag-and-drop your .woff file here."
+msgstr ""
+"Wähle hier die .woff-Datei aus oder ziehe sie per Drag-And-Drop ins Feld."
+
+#: sv_webfontloader.php:141
+msgid "Web Open Font Format 2.0 (.woff2)"
+msgstr "Web Open Font Format 2.0 (.woff2)"
 
 #: sv_webfontloader.php:142
-msgid "Filetypes available: "
-msgstr "Dateitypen verfügbar:"
+msgid "Select or drag-and-drop your .woff2 file here."
+msgstr ""
+"Wähle hier die .woff2-Datei aus oder ziehe sie per Drag-And-Drop ins Feld."
 
 #. Theme Name of the plugin/theme
 msgid "sv_webfontloader"
 msgstr "sv_webfontloader"
+
+#~ msgid "Dashicons"
+#~ msgstr "Dashicons"
+
+#~ msgid "Load Dashicons from WordPress in Frontend."
+#~ msgstr "Lade Dashicons von WordPress im Frontend."
+
+#~ msgid "Please reload page after new fonts have been uploaded."
+#~ msgstr ""
+#~ "Bitte lade die Seite neu, nachdem neue Schriften hochgeladen wurden."
+
+#~ msgid "No fonts uploaded yet"
+#~ msgstr "Noch keine Schriften hochgeladen"
+
+#~ msgid "This module gives the ability to upload & manage webfonts."
+#~ msgstr ""
+#~ "Dieses Modul gibt die Möglichkeit, Webschriften hochzuladen und zu "
+#~ "verwalten."
+
+#~ msgid "Configure Fonts previously uploaded."
+#~ msgstr "Konfiguriere Schriften, die zuvor hochgeladen wurden."
+
+#~ msgid "Family Name"
+#~ msgstr "Schriftfamilie"
+
+#~ msgid "Font Family Name, e.g. for CSS"
+#~ msgstr "Name der Schriftfamilie, z.B. für CSS"
+
+#~ msgid "If this font is italic version, activate this setting."
+#~ msgstr "Wenn diese Schriftart kursiv ist, aktiviere diese Einstellung."
+
+#~ msgid "Only active fonts will be loaded."
+#~ msgstr "Es werden nur aktive Schriften geladen."
+
+#~ msgid "Filetypes available: "
+#~ msgstr "Dateitypen verfügbar:"

@@ -68,7 +68,7 @@
 				->add_child( $this )
 				->set_ID( 'family' )
 				->set_title( __( 'Font family', $this->get_module_name() ) )
-				->set_description( __( 'The name of the font family, that this font belongs too.', $this->get_module_name() ) )
+				->set_description( __( 'The name of the font family.', $this->get_module_name() ) )
 				->load_type( 'text' )
 				->set_placeholder( __( 'Name', $this->get_module_name() ) );
 			
