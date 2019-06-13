@@ -17,16 +17,13 @@
 		}
 		
 		public function init() {
-			// Translates the module
-			load_theme_textdomain( 'sv_webfontloader', $this->get_path( 'languages' ) );
-			
 			// Module Info
 			$this->set_module_title( 'SV Webfontloader' );
-			$this->set_module_desc( __( 'Upload and manage fonts.', 'sv_webfontloader' ) );
+			$this->set_module_desc( __( 'Upload and manage fonts.', 'sv_100' ) );
 			
 			// Section Info
-			$this->set_section_title( __( 'Fonts', 'sv_webfontloader' ) );
-			$this->set_section_desc( __( 'Upload and manage fonts.', 'sv_webfontloader' ) );
+			$this->set_section_title( __( 'Fonts', 'sv_100' ) );
+			$this->set_section_desc( __( 'Upload and manage fonts.', 'sv_100' ) );
 			$this->set_section_type( 'settings' );
 			$this->get_root()->add_section( $this );
 			
@@ -51,49 +48,49 @@
 			$this->s['fonts'] =
 				static::$settings->create( $this )
 								 ->set_ID( 'fonts' )
-								 ->set_title( __( 'Add a new font', 'sv_webfontloader' ) )
+								 ->set_title( __( 'Add a new font', 'sv_100' ) )
 								 ->load_type( 'group' );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'entry_label' )
-				->set_title( __( 'Font Label', 'sv_webfontloader' ) )
-				->set_description( __( 'A label to differentiate your uploaded fonts.', 'sv_webfontloader' ) )
+				->set_title( __( 'Font Label', 'sv_100' ) )
+				->set_description( __( 'A label to differentiate your uploaded fonts.', 'sv_100' ) )
 				->load_type( 'text' )
-				->set_placeholder( __( 'Label', 'sv_webfontloader' ) );
+				->set_placeholder( __( 'Label', 'sv_100' ) );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'family' )
-				->set_title( __( 'Font family', 'sv_webfontloader' ) )
-				->set_description( __( 'The name of the font family.', 'sv_webfontloader' ) )
+				->set_title( __( 'Font family', 'sv_100' ) )
+				->set_description( __( 'The name of the font family.', 'sv_100' ) )
 				->load_type( 'text' )
-				->set_placeholder( __( 'Name', 'sv_webfontloader' ) );
+				->set_placeholder( __( 'Name', 'sv_100' ) );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'active' )
-				->set_title( __( 'Active', 'sv_webfontloader' ) )
-				->set_description( __( 'Activate or deactivate this font.', 'sv_webfontloader' ) )
+				->set_title( __( 'Active', 'sv_100' ) )
+				->set_description( __( 'Activate or deactivate this font.', 'sv_100' ) )
 				->load_type( 'checkbox' );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'italic' )
-				->set_title( __( 'Italic', 'sv_webfontloader' ) )
-				->set_description( __( 'Is the font italic?', 'sv_webfontloader' ) )
+				->set_title( __( 'Italic', 'sv_100' ) )
+				->set_description( __( 'Is the font italic?', 'sv_100' ) )
 				->load_type( 'checkbox' );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'weight' )
-				->set_title( __( 'Font weight', 'sv_webfontloader' ) )
-				->set_description( __( 'Select the font weight.', 'sv_webfontloader' ) )
+				->set_title( __( 'Font weight', 'sv_100' ) )
+				->set_description( __( 'Select the font weight.', 'sv_100' ) )
 				->load_type( 'select' )
 				->set_options( array(
 					100 => 100,
@@ -111,8 +108,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_ttf' )
-				->set_title( __( 'TrueType (.ttf)', 'sv_webfontloader' ) )
-				->set_description( __( 'Select or drag-and-drop your .ttf file here.', 'sv_webfontloader' ) )
+				->set_title( __( 'TrueType (.ttf)', 'sv_100' ) )
+				->set_description( __( 'Select or drag-and-drop your .ttf file here.', 'sv_100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.ttf'));
 			
@@ -120,8 +117,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_otf' )
-				->set_title( __( 'OpenType (.otf)', 'sv_webfontloader' ) )
-				->set_description( __( 'Select or drag-and-drop your .otf file here.', 'sv_webfontloader' ) )
+				->set_title( __( 'OpenType (.otf)', 'sv_100' ) )
+				->set_description( __( 'Select or drag-and-drop your .otf file here.', 'sv_100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.otf'));
 			
@@ -129,8 +126,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_woff' )
-				->set_title( __( 'Web Open Font Format (.woff)', 'sv_webfontloader' ) )
-				->set_description( __( 'Select or drag-and-drop your .woff file here.', 'sv_webfontloader' ) )
+				->set_title( __( 'Web Open Font Format (.woff)', 'sv_100' ) )
+				->set_description( __( 'Select or drag-and-drop your .woff file here.', 'sv_100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.woff'));
 			
@@ -138,8 +135,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_woff2' )
-				->set_title( __( 'Web Open Font Format 2.0 (.woff2)', 'sv_webfontloader' ) )
-				->set_description( __( 'Select or drag-and-drop your .woff2 file here.', 'sv_webfontloader' ) )
+				->set_title( __( 'Web Open Font Format 2.0 (.woff2)', 'sv_100' ) )
+				->set_description( __( 'Select or drag-and-drop your .woff2 file here.', 'sv_100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.woff2'));
 			
