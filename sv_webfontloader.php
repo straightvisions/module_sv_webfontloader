@@ -12,10 +12,6 @@
 	 */
 	
 	class sv_webfontloader extends init {
-		public function __construct() {
-		
-		}
-		
 		public function init() {
 			// Module Info
 			$this->set_module_title( 'SV Webfontloader' );
@@ -46,7 +42,7 @@
 		
 		protected function load_settings(): sv_webfontloader {
 			$this->s['fonts'] =
-				static::$settings->create( $this )
+				$this->get_setting()
 								 ->set_ID( 'fonts' )
 								 ->set_title( __( 'Add a new font', 'sv_100' ) )
 								 ->load_type( 'group' );
