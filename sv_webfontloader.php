@@ -156,7 +156,7 @@
 						$output[]		= "\t" . 'font-weight: ' . $font['weight'] . ';';
 						
 						// Font Style
-						if ( $font['italic'] ) {
+						if ( isset($font['italic']) ) {
 							$output[] 	= "\t" . 'font-style: italic;';
 						}
 						
