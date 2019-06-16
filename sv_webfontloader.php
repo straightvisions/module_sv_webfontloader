@@ -138,7 +138,18 @@
 			
 			return $this;
 		}
-		
+		public function get_font_by_label(string $label): array{
+			$output = array();
+			$fonts = $this->get_setting('fonts')->run_type()->get_data();
+			if($fonts) {
+				foreach ($fonts as $font) {
+					if($font['entry_label'] == $label) {
+						return $font;
+					}
+				}
+			}
+			return $output;
+		}
 		public function load_fonts() {
 			$fonts = $this->s['fonts']->run_type()->get_data();
 			
