@@ -154,6 +154,25 @@
 			$fonts = $this->s['fonts']->run_type()->get_data();
 			
 			if ( $fonts && is_array( $fonts ) && count( $fonts ) > 0 ) {
+
+				$data_types = array(
+					/*'file_ttf'			=> 'font/ttf',
+					'file_otf'			=> 'font/otf',
+					'file_woff'			=> 'font/woff',*/
+					'file_woff2'		=> 'font/woff2'
+				);
+
+				// Preloading critical fonts maximize pagespeed
+				// only preload woff2 to avoid browser loading old standard fonts if not needed
+				// @todo: allow user to select fonts as critical for preload
+				foreach ( $fonts as $font ) {
+					foreach($data_types as $d => $t) {
+						if(isset( $font[$d])) {
+							echo '<link rel="preload" as="font" href="' . wp_get_attachment_url($font[$d]['file']) . '" type="' . $t . '" crossorigin />';
+						}
+					}
+				}
+
 				echo '<style data-sv_100_module="' . $this->get_prefix( 'fonts' ) . '">';
 				
 				foreach ( $fonts as $font ) {
@@ -161,7 +180,7 @@
 						$output 		= array();
 						$output[]		= '@font-face {';
 						$output[]		= "\t" . 'font-family: "' . $font['family'] . '";';
-						$output[]		= "\t" . 'font-display: fallback;';
+						$output[]		= "\t" . 'font-display: swap;'; // @todo: make this a usersetting, default "swap" for best pagespeed
 						
 						// Font Weight
 						$output[]		= "\t" . 'font-weight: ' . $font['weight'] . ';';
