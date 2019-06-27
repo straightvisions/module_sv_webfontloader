@@ -15,11 +15,11 @@
 		public function init() {
 			// Module Info
 			$this->set_module_title( 'SV Webfontloader' );
-			$this->set_module_desc( __( 'Upload and manage fonts.', 'straightvisions_100' ) );
+			$this->set_module_desc( __( 'Upload and manage fonts.', 'straightvisions-100' ) );
 			
 			// Section Info
-			$this->set_section_title( __( 'Fonts', 'straightvisions_100' ) );
-			$this->set_section_desc( __( 'Upload and manage fonts.', 'straightvisions_100' ) );
+			$this->set_section_title( __( 'Fonts', 'straightvisions-100' ) );
+			$this->set_section_desc( __( 'Upload and manage fonts.', 'straightvisions-100' ) );
 			$this->set_section_type( 'settings' );
 			$this->get_root()->add_section( $this );
 			
@@ -44,49 +44,49 @@
 			$this->s['fonts'] =
 				$this->get_setting()
 								 ->set_ID( 'fonts' )
-								 ->set_title( __( 'Add a new font', 'straightvisions_100' ) )
+								 ->set_title( __( 'Add a new font', 'straightvisions-100' ) )
 								 ->load_type( 'group' );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'entry_label' )
-				->set_title( __( 'Font Label', 'straightvisions_100' ) )
-				->set_description( __( 'A label to differentiate your uploaded fonts.', 'straightvisions_100' ) )
+				->set_title( __( 'Font Label', 'straightvisions-100' ) )
+				->set_description( __( 'A label to differentiate your uploaded fonts.', 'straightvisions-100' ) )
 				->load_type( 'text' )
-				->set_placeholder( __( 'Label', 'straightvisions_100' ) );
+				->set_placeholder( __( 'Label', 'straightvisions-100' ) );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'family' )
-				->set_title( __( 'Font family', 'straightvisions_100' ) )
-				->set_description( __( 'The name of the font family.', 'straightvisions_100' ) )
+				->set_title( __( 'Font family', 'straightvisions-100' ) )
+				->set_description( __( 'The name of the font family.', 'straightvisions-100' ) )
 				->load_type( 'text' )
-				->set_placeholder( __( 'Name', 'straightvisions_100' ) );
+				->set_placeholder( __( 'Name', 'straightvisions-100' ) );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'active' )
-				->set_title( __( 'Active', 'straightvisions_100' ) )
-				->set_description( __( 'Activate or deactivate this font.', 'straightvisions_100' ) )
+				->set_title( __( 'Active', 'straightvisions-100' ) )
+				->set_description( __( 'Activate or deactivate this font.', 'straightvisions-100' ) )
 				->load_type( 'checkbox' );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'italic' )
-				->set_title( __( 'Italic', 'straightvisions_100' ) )
-				->set_description( __( 'Is the font italic?', 'straightvisions_100' ) )
+				->set_title( __( 'Italic', 'straightvisions-100' ) )
+				->set_description( __( 'Is the font italic?', 'straightvisions-100' ) )
 				->load_type( 'checkbox' );
 			
 			$this->s['fonts']
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'weight' )
-				->set_title( __( 'Font weight', 'straightvisions_100' ) )
-				->set_description( __( 'Select the font weight.', 'straightvisions_100' ) )
+				->set_title( __( 'Font weight', 'straightvisions-100' ) )
+				->set_description( __( 'Select the font weight.', 'straightvisions-100' ) )
 				->load_type( 'select' )
 				->set_options( array(
 					100 => 100,
@@ -104,8 +104,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_ttf' )
-				->set_title( __( 'TrueType (.ttf)', 'straightvisions_100' ) )
-				->set_description( __( 'Select or drag-and-drop your .ttf file here.', 'straightvisions_100' ) )
+				->set_title( __( 'TrueType (.ttf)', 'straightvisions-100' ) )
+				->set_description( __( 'Select or drag-and-drop your .ttf file here.', 'straightvisions-100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.ttf'));
 			
@@ -113,8 +113,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_otf' )
-				->set_title( __( 'OpenType (.otf)', 'straightvisions_100' ) )
-				->set_description( __( 'Select or drag-and-drop your .otf file here.', 'straightvisions_100' ) )
+				->set_title( __( 'OpenType (.otf)', 'straightvisions-100' ) )
+				->set_description( __( 'Select or drag-and-drop your .otf file here.', 'straightvisions-100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.otf'));
 			
@@ -122,8 +122,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_woff' )
-				->set_title( __( 'Web Open Font Format (.woff)', 'straightvisions_100' ) )
-				->set_description( __( 'Select or drag-and-drop your .woff file here.', 'straightvisions_100' ) )
+				->set_title( __( 'Web Open Font Format (.woff)', 'straightvisions-100' ) )
+				->set_description( __( 'Select or drag-and-drop your .woff file here.', 'straightvisions-100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.woff'));
 			
@@ -131,8 +131,8 @@
 				->run_type()
 				->add_child( $this )
 				->set_ID( 'file_woff2' )
-				->set_title( __( 'Web Open Font Format 2.0 (.woff2)', 'straightvisions_100' ) )
-				->set_description( __( 'Select or drag-and-drop your .woff2 file here.', 'straightvisions_100' ) )
+				->set_title( __( 'Web Open Font Format 2.0 (.woff2)', 'straightvisions-100' ) )
+				->set_description( __( 'Select or drag-and-drop your .woff2 file here.', 'straightvisions-100' ) )
 				->load_type( 'upload' )
 				->run_type()->set_allowed_filetypes(array('.woff2'));
 			
