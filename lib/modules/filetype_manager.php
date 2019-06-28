@@ -1,14 +1,16 @@
 <?php
-	namespace sv_100;
+	namespace sv100;
 	
 	/**
+	 * @version         4.000
 	 * @author			straightvisions GmbH
-	 * @package			sv_100
-	 * @copyright		2017 straightvisions GmbH
+	 * @package			sv100
+	 * @copyright		2019 straightvisions GmbH
 	 * @link			https://straightvisions.com
-	 * @since			1.0
+	 * @since			1.000
 	 * @license			See license.txt or https://straightvisions.com
 	 */
+	
 	
 	class sv_webfontloader_filetype_manager extends sv_webfontloader {
 		protected $filetypes	= array(
@@ -19,10 +21,6 @@
 			'ttf'				=> 'application/x-font-ttf',
 			'otf'				=> 'application/font-sfnt'
 		);
-		
-		public function __construct() {
-		
-		}
 		
 		public function init() {
 			// Action Hooks
