@@ -144,8 +144,11 @@
 		public function get_font_by_label( string $label ): array {
 			$output = array();
 			$fonts 	= $this->get_setting( 'fonts' )->run_type()->get_data();
-			
-			if ( $fonts ) {
+
+			// sv100_sv_webfontloader_get_font_by_label
+			$fonts = apply_filters($this->get_prefix(__FUNCTION__), $fonts ? $fonts : array());
+
+			if ( count($fonts) > 0 ) {
 				foreach ( $fonts as $font ) {
 					if ( $font['entry_label'] === $label ) {
 						return $font;
