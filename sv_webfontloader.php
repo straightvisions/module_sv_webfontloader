@@ -13,17 +13,15 @@
 	
 	class sv_webfontloader extends init {
 		public function init() {
-			// Module Info
-			$this->set_module_title( 'SV Webfontloader' );
-			$this->set_module_desc( __( 'Upload and manage fonts.', 'sv100' ) );
-			
-			// Section Info
-			$this->set_section_title( __( 'Fonts', 'sv100' ) );
-			$this->set_section_desc( __( 'Upload and manage fonts.', 'sv100' ) );
-			$this->set_section_type( 'settings' );
-			$this->get_root()->add_section( $this );
-			
-			$this->load_modules()->load_settings();
+			$this->set_module_title( 'SV Webfontloader' )
+				 ->set_module_desc( __( 'Upload and manage fonts.', 'sv100' ) )
+				 ->load_modules()
+				 ->load_settings()
+				 ->set_section_title( __( 'Fonts', 'sv100' ) )
+				 ->set_section_desc( __( 'Upload and manage fonts.', 'sv100' ) )
+				 ->set_section_type( 'settings' )
+				 ->get_root()
+				 ->add_section( $this );
 			
 			// Action Hooks & Filter
 			add_action( 'wp_head', array( $this, 'load_fonts' ) );
@@ -41,11 +39,9 @@
 		}
 		
 		protected function load_settings(): sv_webfontloader {
-			$this->s['fonts'] =
-				$this->get_setting()
-					 ->set_ID( 'fonts' )
-					 ->set_title( __( 'Add a new font', 'sv100' ) )
-					 ->load_type( 'group' );
+			$this->get_setting( 'fonts' )
+				 ->set_title( __( 'Add a new font', 'sv100' ) )
+				 ->load_type( 'group' );
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
@@ -109,7 +105,8 @@
 				 ->set_title( __( 'TrueType (.ttf)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .ttf file here.', 'sv100' ) )
 				 ->load_type( 'upload' )
-				 ->run_type()->set_allowed_filetypes( array( '.ttf' ) );
+				 ->run_type()
+				 ->set_allowed_filetypes( array( '.ttf' ) );
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
@@ -118,7 +115,8 @@
 				 ->set_title( __( 'OpenType (.otf)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .otf file here.', 'sv100' ) )
 				 ->load_type( 'upload' )
-				 ->run_type()->set_allowed_filetypes( array( '.otf' ) );
+				 ->run_type()
+				 ->set_allowed_filetypes( array( '.otf' ) );
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
@@ -127,7 +125,8 @@
 				 ->set_title( __( 'Web Open Font Format (.woff)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .woff file here.', 'sv100' ) )
 				 ->load_type( 'upload' )
-				 ->run_type()->set_allowed_filetypes( array( '.woff' ) );
+				 ->run_type()
+				 ->set_allowed_filetypes( array( '.woff' ) );
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
@@ -136,7 +135,8 @@
 				 ->set_title( __( 'Web Open Font Format 2.0 (.woff2)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .woff2 file here.', 'sv100' ) )
 				 ->load_type( 'upload' )
-				 ->run_type()->set_allowed_filetypes( array( '.woff2' ) );
+				 ->run_type()
+				 ->set_allowed_filetypes( array( '.woff2' ) );
 			
 			return $this;
 		}
