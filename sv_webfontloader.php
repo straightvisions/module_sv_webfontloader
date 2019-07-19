@@ -47,7 +47,7 @@
 				 ->run_type()
 				 ->add_child( $this )
 				 ->set_ID( 'entry_label' )
-				 ->set_title( __( 'Font Label', 'sv100' ) )
+				 ->set_title( __( 'Font label', 'sv100' ) )
 				 ->set_description( __( 'A label to differentiate your uploaded fonts.', 'sv100' ) )
 				 ->load_type( 'text' )
 				 ->set_placeholder( __( 'Label', 'sv100' ) );
