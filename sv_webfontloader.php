@@ -13,7 +13,7 @@
 	
 	class sv_webfontloader extends init {
 		public function init() {
-			$this->set_module_title( 'SV Webfontloader' )
+			$this->set_module_title( __( 'SV Webfontloader', 'sv100' ) )
 				 ->set_module_desc( __( 'Upload and manage fonts.', 'sv100' ) )
 				 ->load_modules()
 				 ->load_settings()
@@ -177,7 +177,9 @@
 				foreach ( $fonts as $font ) {
 					foreach( $data_types as $d => $t ) {
 						if ( isset( $font[ $d ] ) ) {
-							echo '<link rel="preload" as="font" href="' . wp_get_attachment_url( $font[ $d ]['file'] ) . '" type="' . $t . '" crossorigin />';
+							echo '<link rel="preload" as="font" href="'
+								 . wp_get_attachment_url( $font[ $d ]['file'] )
+								 . '" type="' . $t . '" crossorigin />';
 						}
 					}
 				}
