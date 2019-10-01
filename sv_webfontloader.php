@@ -25,6 +25,12 @@
 			
 			// Action Hooks & Filter
 			add_action( 'wp_head', array( $this, 'load_fonts' ) );
+
+			add_action('enqueue_block_editor_assets', array($this, 'gutenberg_fonts'), 9999);
+		}
+
+		public function gutenberg_fonts(){
+			wp_add_inline_style('sv_core_gutenberg_style', $this->load_fonts(true));
 		}
 		
 		protected function load_modules(): sv_webfontloader {
@@ -159,7 +165,11 @@
 			return $output;
 		}
 		
-		public function load_fonts() {
+		public function load_fonts(bool $return=false) {
+			$before = '';
+			$css = '';
+			$after = '';
+
 			$fonts = $this->get_setting( 'fonts' )->run_type()->get_data();
 			
 			if ( $fonts && is_array( $fonts ) && count( $fonts ) > 0 ) {
@@ -177,14 +187,14 @@
 				foreach ( $fonts as $font ) {
 					foreach( $data_types as $d => $t ) {
 						if ( isset( $font[ $d ] ) ) {
-							echo '<link rel="preload" as="font" href="'
+							$before .= '<link rel="preload" as="font" href="'
 								 . wp_get_attachment_url( $font[ $d ]['file'] )
 								 . '" type="' . $t . '" crossorigin />';
 						}
 					}
 				}
 
-				echo '<style data-sv100_module="' . $this->get_prefix( 'fonts' ) . '">';
+				$before .= '<style data-sv100_module="' . $this->get_prefix( 'fonts' ) . '">';
 				
 				foreach ( $fonts as $font ) {
 					if ( $font['active'] === '1' ) {
@@ -226,12 +236,18 @@
 
 						$output[]		= implode( "\n", $urls );
 						$output[]		= '}' . "\n\n";
-						
-						echo implode( "\n", $output );
+
+						$css .= implode( "\n", $output );
 					}
 				}
 				
-				echo '</style>';
+				$after .= '</style>';
+			}
+
+			if(!$return){
+				echo $before.$css.$after;
+			}else{
+				return $css;
 			}
 		}
 	}
