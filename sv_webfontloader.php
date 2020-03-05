@@ -2,7 +2,7 @@
 	namespace sv100;
 	
 	/**
-	 * @version         4.000
+	 * @version         4.007
 	 * @author			straightvisions GmbH
 	 * @package			sv100
 	 * @copyright		2019 straightvisions GmbH
@@ -149,7 +149,7 @@
 		
 		public function get_font_by_label( string $label ): array {
 			$output = array();
-			$fonts 	= $this->get_setting( 'fonts' )->run_type()->get_data();
+			$fonts 	= $this->get_setting( 'fonts' )->get_data();
 
 			// sv100_sv_webfontloader_get_font_by_label
 			$fonts = apply_filters($this->get_prefix(__FUNCTION__), $fonts ? $fonts : array());
@@ -170,7 +170,7 @@
 			$css = '';
 			$after = '';
 
-			$fonts = $this->get_setting( 'fonts' )->run_type()->get_data();
+			$fonts = $this->get_setting( 'fonts' )->get_data();
 			
 			if ( $fonts && is_array( $fonts ) && count( $fonts ) > 0 ) {
 
