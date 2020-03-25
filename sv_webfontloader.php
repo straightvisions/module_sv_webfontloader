@@ -2,7 +2,7 @@
 	namespace sv100;
 	
 	/**
-	 * @version         4.007
+	 * @version         4.008
 	 * @author			straightvisions GmbH
 	 * @package			sv100
 	 * @copyright		2019 straightvisions GmbH
@@ -249,5 +249,26 @@
 			}else{
 				return $css;
 			}
+		}
+
+		// Returns an array font labels of all available fonts in Webfontloader
+		public function get_font_options(): array {
+			$fonts = array( '' => __( 'choose...', 'sv100' ) );
+
+			if ( $this->get_setting( 'fonts' )->get_data() ){
+				$font_array = $this->get_setting( 'fonts' )->get_data();
+			} else {
+				$font_array = array();
+			}
+
+			$font_array = apply_filters( $this->get_prefix(), $font_array );
+
+			if ( count( $font_array ) > 0 ) {
+				foreach( $font_array as $font ) {
+					$fonts[ $font['entry_label'] ] = $font['entry_label'];
+				}
+			}
+			
+			return $fonts;
 		}
 	}
