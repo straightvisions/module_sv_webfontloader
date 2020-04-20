@@ -18,15 +18,18 @@
 				 ->load_modules()
 				 ->load_settings()
 				 ->set_section_title( __( 'Fonts', 'sv100' ) )
-				 ->set_section_desc( __( 'Upload and manage fonts.', 'sv100' ) )
+				 ->set_section_desc( $this->get_module_desc() )
 				 ->set_section_type( 'settings' )
 				 ->get_root()
 				 ->add_section( $this );
-			
-			// Action Hooks & Filter
-			add_action( 'wp_head', array( $this, 'load_fonts' ) );
 
-			add_action('enqueue_block_editor_assets', array($this, 'gutenberg_fonts'), 9999);
+			// Action Hooks & Filter
+
+			if(is_admin()){
+				add_action('enqueue_block_editor_assets', array($this, 'gutenberg_fonts'), 9999);
+			}else{
+				add_action( 'wp_head', array( $this, 'load_fonts' ) );
+			}
 		}
 
 		public function gutenberg_fonts(){
