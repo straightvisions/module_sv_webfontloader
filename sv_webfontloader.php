@@ -54,7 +54,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'entry_label' )
 				 ->set_title( __( 'Font label', 'sv100' ) )
 				 ->set_description( __( 'A label to differentiate your uploaded fonts.', 'sv100' ) )
@@ -63,7 +63,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'family' )
 				 ->set_title( __( 'Font family', 'sv100' ) )
 				 ->set_description( __( 'The name of the font family.', 'sv100' ) )
@@ -72,7 +72,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'active' )
 				 ->set_title( __( 'Active', 'sv100' ) )
 				 ->set_description( __( 'Activate or deactivate this font.', 'sv100' ) )
@@ -80,7 +80,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'italic' )
 				 ->set_title( __( 'Italic', 'sv100' ) )
 				 ->set_description( __( 'Is the font italic?', 'sv100' ) )
@@ -88,7 +88,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'weight' )
 				 ->set_title( __( 'Font weight', 'sv100' ) )
 				 ->set_description( __( 'Select the font weight.', 'sv100' ) )
@@ -109,7 +109,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'file_ttf' )
 				 ->set_title( __( 'TrueType (.ttf)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .ttf file here.', 'sv100' ) )
@@ -119,7 +119,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'file_otf' )
 				 ->set_title( __( 'OpenType (.otf)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .otf file here.', 'sv100' ) )
@@ -129,7 +129,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'file_woff' )
 				 ->set_title( __( 'Web Open Font Format (.woff)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .woff file here.', 'sv100' ) )
@@ -139,7 +139,7 @@
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
-				 ->add_child( $this )
+				 ->add_child()
 				 ->set_ID( 'file_woff2' )
 				 ->set_title( __( 'Web Open Font Format 2.0 (.woff2)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .woff2 file here.', 'sv100' ) )
