@@ -1,30 +1,20 @@
 <?php
 	namespace sv100;
-	
-	/**
-	 * @version         4.008
-	 * @author			straightvisions GmbH
-	 * @package			sv100
-	 * @copyright		2019 straightvisions GmbH
-	 * @link			https://straightvisions.com
-	 * @since			1.000
-	 * @license			See license.txt or https://straightvisions.com
-	 */
-	
+
 	class sv_webfontloader extends init {
 		public function init() {
 			$this->set_module_title( __( 'SV Webfontloader', 'sv100' ) )
 				 ->set_module_desc( __( 'Upload and manage fonts.', 'sv100' ) )
 				 ->load_modules()
-				 ->load_settings()
-				 ->set_section_title( __( 'Fonts', 'sv100' ) )
-				 ->set_section_desc( $this->get_module_desc() )
-				 ->set_section_type( 'settings' )
-				 ->get_root()
-				 ->add_section( $this );
+				->set_section_title( $this->get_module_title() )
+				->set_section_desc( $this->get_module_desc() )
+				->set_section_type( 'settings' )
+				->set_section_template_path()
+				->set_section_order(5000)
+				->get_root()
+				->add_section( $this );
 
 			// Action Hooks & Filter
-
 			if(is_admin()){
 				add_action('enqueue_block_editor_assets', array($this, 'gutenberg_fonts'), 9999);
 			}else{
