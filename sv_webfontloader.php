@@ -201,7 +201,7 @@
 						
 						// Font Style
 						if ( isset( $font['italic'] ) && $font['italic'] == 1 ) {
-							$output[] 	= "\t" . 'font-style: italic;'.$font['italic'];
+							$output[] 	= "\t" . 'font-style: italic;';
 						}
 						
 						// Source Files
