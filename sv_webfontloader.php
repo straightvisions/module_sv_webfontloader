@@ -4,28 +4,23 @@
 	class sv_webfontloader extends init {
 		public function init() {
 			$this->set_module_title( __( 'SV Webfontloader', 'sv100' ) )
-				 ->set_module_desc( __( 'Upload and manage fonts.', 'sv100' ) )
-				 ->load_modules()
+				->set_module_desc( __( 'Upload and manage fonts.', 'sv100' ) )
+				->load_modules()
+				->set_css_cache_active()
 				->set_section_title( $this->get_module_title() )
 				->set_section_desc( $this->get_module_desc() )
 				->set_section_template_path()
+				->register_scripts()
 				->set_section_order(600)
 				->set_section_icon('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M22 0h-20v6h1.999c0-1.174.397-3 2.001-3h4v16.874c0 1.174-.825 2.126-2 2.126h-1v2h9.999v-2h-.999c-1.174 0-2-.952-2-2.126v-16.874h4c1.649 0 2.02 1.826 2.02 3h1.98v-6z"/></svg>')
 				->get_root()
 				->add_section( $this );
 
-			// Action Hooks & Filter
-			if(is_admin()){
-				add_action('enqueue_block_editor_assets', array($this, 'gutenberg_fonts'), 9999);
-			}else{
+			// Prefetch
+			if(!is_admin()){
 				add_action( 'wp_head', array( $this, 'load_fonts' ) );
 			}
 		}
-
-		public function gutenberg_fonts(){
-			wp_add_inline_style('sv_core_gutenberg_style', $this->load_fonts(true));
-		}
-		
 		protected function load_modules(): sv_webfontloader {
 			require_once( $this->get_path( 'lib/modules/filetype_manager.php' ) );
 			
@@ -100,36 +95,6 @@
 			$this->get_setting( 'fonts' )
 				 ->run_type()
 				 ->add_child()
-				 ->set_ID( 'file_ttf' )
-				 ->set_title( __( 'TrueType (.ttf)', 'sv100' ) )
-				 ->set_description( __( 'Select or drag-and-drop your .ttf file here.', 'sv100' ) )
-				 ->load_type( 'upload' )
-				 ->run_type()
-				 ->set_allowed_filetypes( array( '.ttf' ) );
-			
-			$this->get_setting( 'fonts' )
-				 ->run_type()
-				 ->add_child()
-				 ->set_ID( 'file_otf' )
-				 ->set_title( __( 'OpenType (.otf)', 'sv100' ) )
-				 ->set_description( __( 'Select or drag-and-drop your .otf file here.', 'sv100' ) )
-				 ->load_type( 'upload' )
-				 ->run_type()
-				 ->set_allowed_filetypes( array( '.otf' ) );
-			
-			$this->get_setting( 'fonts' )
-				 ->run_type()
-				 ->add_child()
-				 ->set_ID( 'file_woff' )
-				 ->set_title( __( 'Web Open Font Format (.woff)', 'sv100' ) )
-				 ->set_description( __( 'Select or drag-and-drop your .woff file here.', 'sv100' ) )
-				 ->load_type( 'upload' )
-				 ->run_type()
-				 ->set_allowed_filetypes( array( '.woff' ) );
-			
-			$this->get_setting( 'fonts' )
-				 ->run_type()
-				 ->add_child()
 				 ->set_ID( 'file_woff2' )
 				 ->set_title( __( 'Web Open Font Format 2.0 (.woff2)', 'sv100' ) )
 				 ->set_description( __( 'Select or drag-and-drop your .woff2 file here.', 'sv100' ) )
@@ -186,55 +151,6 @@
 						}
 					}
 				}
-
-				$before .= '<style data-sv100_module="' . $this->get_prefix( 'fonts' ) . '">';
-				
-				foreach ( $fonts as $font ) {
-					if ( $font['active'] === '1' ) {
-						$output 		= array();
-						$output[]		= '@font-face {';
-						$output[]		= "\t" . 'font-family: "' . $font['family'] . '";';
-						$output[]		= "\t" . 'font-display: swap;'; // @todo: make this a usersetting, default "swap" for best pagespeed
-						
-						// Font Weight
-						$output[]		= "\t" . 'font-weight: ' . $font['weight'] . ';';
-						
-						// Font Style
-						if ( isset( $font['italic'] ) && $font['italic'] == 1 ) {
-							$output[] 	= "\t" . 'font-style: italic;';
-						}
-						
-						// Source Files
-						$urls			= array();
-						
-						// TrueType .ttf
-						if ( isset( $font['file_ttf'] ) && ! empty( $font['file_ttf'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_ttf']['file'] )  . '") format("truetype");';
-						}
-						
-						// OpenType .otf
-						if ( isset( $font['file_otf'] ) && ! empty( $font['file_otf'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_otf']['file'] ) . '") format("opentype");';
-						}
-						
-						// Web Open Font Format .woff
-						if ( isset( $font['file_woff'] ) && ! empty( $font['file_woff'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_woff']['file'] ) . '") format("woff");';
-						}
-						
-						// Web Open Font Format 2.0 .woff2
-						if ( isset( $font['file_woff2'] ) && ! empty( $font['file_woff2'] ) ) {
-							$urls[]		= "\t" . 'src: url("' . wp_get_attachment_url( $font['file_woff2']['file'] ) . '") format("woff2");';
-						}
-
-						$output[]		= implode( "\n", $urls );
-						$output[]		= '}' . "\n\n";
-
-						$css .= implode( "\n", $output );
-					}
-				}
-				
-				$after .= '</style>';
 			}
 
 			if(!$return){
