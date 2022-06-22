@@ -21,6 +21,56 @@
 				add_action( 'wp_head', array( $this, 'load_fonts' ) );
 			}
 		}
+		public function theme_json_update_data(){
+			$theme_json     = $this->theme_json_get_data();
+			$fonts          = $this->get_setting( 'fonts' )->get_data();
+
+			if(!$fonts || !is_array($fonts) || count($fonts) === 0){
+				return $theme_json;
+			}
+
+			if (!is_dir($this->get_active_theme_path().'fonts/')) {
+				// dir doesn't exist, make it
+				mkdir($this->get_active_theme_path().'fonts/', 0755, true);
+			}
+
+			$theme_json['settings']['typography']['fontFamilies']   = array();
+
+			foreach($fonts as $font){
+				if ( $font['active'] !== '1') {
+					continue;
+				}
+
+				$path_src   = get_attached_file( $font['file_woff2']['file'] );
+
+				if(!file_exists($path_src)){
+					continue;
+				}
+
+				$path_new   = 'fonts/'.pathinfo($path_src, PATHINFO_FILENAME).'.'.pathinfo($path_src, PATHINFO_EXTENSION );
+
+				copy($path_src,$this->get_active_theme_path().$path_new );
+
+				if(!isset($theme_json['settings']['typography']['fontFamilies'][$font['slug']])){
+					$theme_json['settings']['typography']['fontFamilies'][$font['slug']]   = array(
+						'fontFamily'        => $font['family'],
+						'slug'              => $font['slug'],
+						'name'              => $font['entry_label']
+					);
+				}
+
+				$theme_json['settings']['typography']['fontFamilies'][$font['slug']]['fontFace'][]  =
+					array(
+						'fontFamily'         => $font['family'],
+						'fontWeight'         => $font['weight'],
+						'fontStyle'          => $font['italic'] ? 'italic' : 'normal',
+						'fontStretch'        => 'normal',
+						'src'                => array('file:./'.$path_new)
+					);
+			}
+
+			return $theme_json;
+		}
 		protected function load_modules(): sv_webfontloader {
 			require_once( $this->get_path( 'lib/modules/filetype_manager.php' ) );
 			
@@ -54,6 +104,15 @@
 				 ->set_description( __( 'The name of the font family.', 'sv100' ) )
 				 ->load_type( 'text' )
 				 ->set_placeholder( __( 'Name', 'sv100' ) );
+
+			$this->get_setting( 'fonts' )
+			     ->run_type()
+			     ->add_child()
+			     ->set_ID( 'slug' )
+			     ->set_title( __( 'Slug', 'sv100' ) )
+			     ->set_description( __( 'The slug of the font family.', 'sv100' ) )
+			     ->load_type( 'id' )
+			     ->set_placeholder( __( 'Slug', 'sv100' ) );
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
