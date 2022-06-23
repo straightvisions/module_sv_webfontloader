@@ -53,9 +53,9 @@
 
 				if(!isset($theme_json['settings']['typography']['fontFamilies'][$font['slug']])){
 					$theme_json['settings']['typography']['fontFamilies'][$font['slug']]   = array(
-						'fontFamily'        => $font['family'],
 						'slug'              => $font['slug'],
-						'name'              => $font['entry_label']
+						'name'              => $font['entry_label'],
+						'fontFamily'        => $font['family']
 					);
 				}
 
