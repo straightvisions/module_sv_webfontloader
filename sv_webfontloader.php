@@ -18,7 +18,7 @@
 
 			// Prefetch
 			if(!is_admin()){
-				add_action( 'wp_head', array( $this, 'load_fonts' ) );
+				add_action( 'wp_head', array( $this, 'preload_fonts' ) );
 			}
 		}
 		public function theme_json_update_data(){
@@ -129,6 +129,14 @@
 				 ->set_title( __( 'Italic', 'sv100' ) )
 				 ->set_description( __( 'Is the font italic?', 'sv100' ) )
 				 ->load_type( 'checkbox' );
+
+			$this->get_setting( 'fonts' )
+			     ->run_type()
+			     ->add_child()
+			     ->set_ID( 'preload' )
+			     ->set_title( __( 'Preload', 'sv100' ) )
+			     ->set_description( __( 'Only fonts needed above the fold and with small file size should be preloaded.', 'sv100' ) )
+			     ->load_type( 'checkbox' );
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
@@ -182,41 +190,25 @@
 			return $output;
 		}
 		
-		public function load_fonts(bool $return=false) {
-			$before = '';
-			$css = '';
-			$after = '';
+		public function preload_fonts() {
+			$output = '';
 
-			$fonts = $this->get_setting( 'fonts' )->get_data();
-			
+			$fonts             = wp_get_global_settings(array('typography','fontFamilies', 'theme'));
+
 			if ( $fonts && is_array( $fonts ) && count( $fonts ) > 0 ) {
-
-				$data_types = array(
-					/*'file_ttf'		=> 'font/ttf',
-					'file_otf'			=> 'font/otf',
-					'file_woff'			=> 'font/woff',*/
-					'file_woff2'		=> 'font/woff2'
-				);
-
-				// Preloading critical fonts maximize pagespeed
-				// only preload woff2 to avoid browser loading old standard fonts if not needed
-				// @todo: allow user to select fonts as critical for preload
 				foreach ( $fonts as $font ) {
-					foreach( $data_types as $d => $t ) {
-						if ( isset( $font[ $d ] ) ) {
-							$before .= '<link rel="preload" as="font" href="'
-								 . wp_get_attachment_url( $font[ $d ]['file'] )
-								 . '" type="' . $t . '" crossorigin />';
+					if($this->get_font_by_label($font['name'])['preload'] !== '1'){
+						continue;
+					}
+					foreach ( $font['fontFace'] as $font_face ) {
+						foreach ( $font_face['src'] as $file ) {
+							$output .= '<link rel="preload" as="font" href="' . str_replace( 'file:./', $this->get_active_theme_url(), $file ) . '" type="font/woff2" crossorigin />';
 						}
 					}
 				}
 			}
 
-			if(!$return){
-				echo $before.$css.$after;
-			}else{
-				return $css;
-			}
+			echo $output;
 		}
 
 		// Returns an array font labels of all available fonts in Webfontloader
