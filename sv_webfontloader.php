@@ -197,9 +197,12 @@
 
 			if ( $fonts && is_array( $fonts ) && count( $fonts ) > 0 ) {
 				foreach ( $fonts as $font ) {
-					if($this->get_font_by_label($font['name'])['preload'] !== '1'){
+					$font_settings = $this->get_font_by_label($font['name']);
+					
+					if(isset($font_settings['preload']) && $font_settings['preload'] !== '1'){
 						continue;
 					}
+					
 					foreach ( $font['fontFace'] as $font_face ) {
 						foreach ( $font_face['src'] as $file ) {
 							$output .= '<link rel="preload" as="font" href="' . str_replace( 'file:./', $this->get_active_theme_url(), $file ) . '" type="font/woff2" crossorigin />';
