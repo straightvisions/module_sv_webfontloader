@@ -193,20 +193,25 @@
 		public function preload_fonts() {
 			$output = '';
 
-			$fonts             = wp_get_global_settings(array('typography','fontFamilies', 'theme'));
+			$fonts  = wp_get_global_settings(array('typography','fontFamilies', 'theme'));
 
-			if ( $fonts && is_array( $fonts ) && count( $fonts ) > 0 ) {
+			if ( empty($fonts) === false ) {
+				
 				foreach ( $fonts as $font ) {
-					$font_settings = $this->get_font_by_label($font['name']);
-					
-					if(isset($font_settings['preload']) && $font_settings['preload'] !== '1'){
-						continue;
-					}
-					
-					foreach ( $font['fontFace'] as $font_face ) {
-						foreach ( $font_face['src'] as $file ) {
-							$output .= '<link rel="preload" as="font" href="' . str_replace( 'file:./', $this->get_active_theme_url(), $file ) . '" type="font/woff2" crossorigin />';
+					if(isset($font['name']) && empty($font['name']) === false){
+						$font_settings = $this->get_font_by_label( (string)$font['name'] );
+						
+						if(isset($font_settings['preload']) && $font_settings['preload'] !== '1'){
+							continue;
 						}
+						
+						foreach ( $font['fontFace'] as $font_face ) {
+							foreach ( $font_face['src'] as $file ) {
+								$output .= '<link rel="preload" as="font" href="' . str_replace( 'file:./', $this->get_active_theme_url(), $file ) . '" type="font/woff2" crossorigin />';
+							}
+						}
+					}else{
+						error_log($this->get_name() . ': Font name var not available or empty. Line ' . __LINE__, E_USER_WARNING );
 					}
 				}
 			}
