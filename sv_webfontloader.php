@@ -73,8 +73,9 @@
 		}
 		protected function load_modules(): sv_webfontloader {
 			require_once( $this->get_path( 'lib/modules/filetype_manager.php' ) );
-			
-			$this->filetype_manager = new sv_webfontloader_filetype_manager();
+
+			// @todo: deprecated in PHP 8
+			@$this->filetype_manager = new sv_webfontloader_filetype_manager();
 			$this->filetype_manager->set_root( $this->get_root( ));
 			$this->filetype_manager->set_parent( $this );
 			$this->filetype_manager->init();
