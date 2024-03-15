@@ -51,15 +51,17 @@
 
 				copy($path_src,$this->get_active_theme_path().$path_new );
 
-				if(!isset($theme_json['settings']['typography']['fontFamilies'][$font['slug']])){
-					$theme_json['settings']['typography']['fontFamilies'][$font['slug']]   = array(
-						'slug'              => $font['slug'],
-						'name'              => $font['entry_label'],
+				$family_slug = sanitize_title($font['family']);
+
+				if(!isset($theme_json['settings']['typography']['fontFamilies'][$family_slug])){
+					$theme_json['settings']['typography']['fontFamilies'][$family_slug]   = array(
+						'slug'              => $family_slug,
+						'name'              => $font['family'],
 						'fontFamily'        => $font['family']
 					);
 				}
 
-				$theme_json['settings']['typography']['fontFamilies'][$font['slug']]['fontFace'][]  =
+				$theme_json['settings']['typography']['fontFamilies'][$family_slug]['fontFace'][]  =
 					array(
 						'fontFamily'         => $font['family'],
 						'fontWeight'         => $font['weight'],
@@ -105,15 +107,6 @@
 				 ->set_description( __( 'The name of the font family.', 'sv100' ) )
 				 ->load_type( 'text' )
 				 ->set_placeholder( __( 'Name', 'sv100' ) );
-
-			$this->get_setting( 'fonts' )
-			     ->run_type()
-			     ->add_child()
-			     ->set_ID( 'slug' )
-			     ->set_title( __( 'Slug', 'sv100' ) )
-			     ->set_description( __( 'The slug of the font family.', 'sv100' ) )
-			     ->load_type( 'id' )
-			     ->set_placeholder( __( 'Slug', 'sv100' ) );
 			
 			$this->get_setting( 'fonts' )
 				 ->run_type()
