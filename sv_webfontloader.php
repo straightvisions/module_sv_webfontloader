@@ -20,6 +20,15 @@
 			if(!is_admin()){
 				add_action( 'wp_head', array( $this, 'preload_fonts' ) );
 			}
+
+			if(is_admin()){
+				add_filter( 'upload_mimes', function($mime_types){
+					$mime_types['ttf'] = 'font/ttf';
+					$mime_types['woff'] = 'font/woff';
+					$mime_types['woff2'] = 'font/woff2';
+					return $mime_types;
+				});
+			}
 		}
 		public function theme_json_update_data(){
 			$theme_json     = $this->theme_json_get_data();
